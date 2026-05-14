@@ -36,10 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 @Composable
-fun LoginScreen(
-  modifier: Modifier,
-  onLoginClicked: (emailAddress: String) -> Unit
-) {
+fun LoginScreen(modifier: Modifier, onLoginClicked: (emailAddress: String) -> Unit) {
   val viewModel: LoginViewModel = hiltViewModel()
 
   val state by viewModel.state.collectAsState()
@@ -47,9 +44,7 @@ fun LoginScreen(
     modifier = modifier,
     state = state,
     onEmailChanged = viewModel::onEmailChanged,
-    onLoginClicked = {
-      onLoginClicked(state.email)
-    },
+    onLoginClicked = { onLoginClicked(state.email) },
   )
 }
 
@@ -62,7 +57,8 @@ private fun LoginScreen(
 ) {
   Box(
     modifier =
-      modifier.fillMaxSize()
+      modifier
+        .fillMaxSize()
         .background(
           brush =
             Brush.verticalGradient(

@@ -13,14 +13,11 @@ private const val USER_ID = 0L
 class PreferencesStore @Inject constructor(database: LolAppDb) {
   private val preferencesQueries: PreferencesQueries = database.preferencesQueries
 
-  suspend fun get(): PreferencesEntity? =
-    preferencesQueries.get().executeAsOneOrNull()
+  suspend fun get(): PreferencesEntity? = preferencesQueries.get().executeAsOneOrNull()
 
   suspend fun insert(details: PreferencesEntity) = withDbContext {
     preferencesQueries.insert(details.copy(id = USER_ID))
   }
 
-  suspend fun delete() = withDbContext {
-    preferencesQueries.delete().await()
-  }
+  suspend fun delete() = withDbContext { preferencesQueries.delete().await() }
 }

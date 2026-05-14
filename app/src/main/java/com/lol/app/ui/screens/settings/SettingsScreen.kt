@@ -16,32 +16,25 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 @Composable
-fun SettingsScreen(
-    modifier: Modifier,
-    onLogoutClicked: () -> Unit
-){
-    val viewModel: SettingsViewModel = hiltViewModel()
+fun SettingsScreen(modifier: Modifier, onLogoutClicked: () -> Unit) {
+  val viewModel: SettingsViewModel = hiltViewModel()
 
-    Surface(
-        modifier = modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.primary
+  Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
+    Box(
+      modifier = Modifier.fillMaxSize().padding(bottom = 32.dp),
+      contentAlignment = Alignment.BottomCenter,
     ) {
-        Box(
-            modifier = Modifier.fillMaxSize()
-                .padding(bottom = 32.dp),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            Button(
-                modifier = Modifier.fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                onClick = onLogoutClicked,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    contentColor = MaterialTheme.colorScheme.onSecondary
-                )
-            ) {
-                Text(text = "LOGOUT")
-            }
-        }
+      Button(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        onClick = onLogoutClicked,
+        colors =
+          ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.secondary,
+            contentColor = MaterialTheme.colorScheme.onSecondary,
+          ),
+      ) {
+        Text(text = "LOGOUT")
+      }
     }
+  }
 }

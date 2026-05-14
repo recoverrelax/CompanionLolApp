@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -28,7 +27,6 @@ import com.lol.app.navigation.BottomNavSceneStrategy
 import com.lol.app.navigation.ChampionListKey
 import com.lol.app.navigation.InitialScreenKey
 import com.lol.app.navigation.LoginKey
-import com.lol.app.navigation.MainBottomNavScreen
 import com.lol.app.navigation.ScreenKey
 import com.lol.app.navigation.SettingsKey
 import com.lol.app.ui.screens.championList.ChampionListScreen

@@ -16,30 +16,19 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 internal object StorageModule {
 
-    @Provides
-    @Singleton
-    fun driver(
-        @ApplicationContext context: Context
-    ): SqlDriver = AndroidSqliteDriver(
-        LolAppDb.Schema,
-        context,
-        "com.lol.storage.db"
-    )
-    @Provides
-    @Singleton
-    fun transacter(
-        dataBase: LolAppDb
-    ): DbTransactor = object : DbTransactor {
-        override fun runInTransaction(body: () -> Unit) {
-            dataBase.transaction { body() }
-        }
+  @Provides
+  @Singleton
+  fun driver(@ApplicationContext context: Context): SqlDriver =
+    AndroidSqliteDriver(LolAppDb.Schema, context, "com.lol.storage.db")
+
+  @Provides
+  @Singleton
+  fun transacter(dataBase: LolAppDb): DbTransactor =
+    object : DbTransactor {
+      override fun runInTransaction(body: () -> Unit) {
+        dataBase.transaction { body() }
+      }
     }
 
-    @Provides
-    @Singleton
-    fun database(
-        driver: SqlDriver
-    ): LolAppDb = LolAppDb(
-        driver = driver
-    )
+  @Provides @Singleton fun database(driver: SqlDriver): LolAppDb = LolAppDb(driver = driver)
 }

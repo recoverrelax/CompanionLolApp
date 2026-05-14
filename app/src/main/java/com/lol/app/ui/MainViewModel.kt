@@ -14,12 +14,12 @@ import com.lol.app.navigation.LoginKey
 import com.lol.app.navigation.ScreenKey
 import com.lol.storage.tables.PreferencesEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel
@@ -27,7 +27,8 @@ class MainViewModel
 constructor(private val preferencesStore: PreferencesStore, savedStateHandle: SavedStateHandle) :
   ViewModel() {
 
-    val backStack: BackStack<ScreenKey> by savedStateHandle.saved(serializer = HISTORY_SERIALIZER){
+  val backStack: BackStack<ScreenKey> by
+    savedStateHandle.saved(serializer = HISTORY_SERIALIZER) {
       BackStack.Impl(initialHistory = listOf(InitialScreenKey))
     }
 
@@ -53,7 +54,7 @@ constructor(private val preferencesStore: PreferencesStore, savedStateHandle: Sa
     }
   }
 
-  fun onLogoutClicked(){
+  fun onLogoutClicked() {
     viewModelScope.launch {
       preferencesStore.delete()
       backStack.setHistory(LoginKey)
@@ -72,8 +73,6 @@ private val HISTORY_SERIALIZER =
     }
 
     override fun deserialize(decoder: Decoder): BackStack<ScreenKey> {
-      return BackStack.Impl(
-        initialHistory = decoder.decodeSerializableValue(delegate)
-      )
+      return BackStack.Impl(initialHistory = decoder.decodeSerializableValue(delegate))
     }
   }
