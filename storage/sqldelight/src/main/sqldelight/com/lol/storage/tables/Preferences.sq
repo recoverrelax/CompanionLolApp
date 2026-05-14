@@ -1,0 +1,15 @@
+
+CREATE TABLE PreferencesEntity (
+  id INTEGER PRIMARY KEY NOT NULL,
+  emailAddress TEXT
+);
+
+insert:
+INSERT INTO PreferencesEntity
+VALUES ?;
+
+get:
+SELECT * FROM PreferencesEntity LIMIT 1;
+
+delete:
+DELETE FROM PreferencesEntity;

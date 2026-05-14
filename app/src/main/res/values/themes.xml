@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.CompanionLolApp" parent="Theme.SplashScreen">
+        <item name="android:windowBackground">@color/background</item>
+        <item name="windowSplashScreenBackground">@color/background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splashscreen</item>
+        <item name="postSplashScreenTheme">@style/Theme.Material3.Light.NoActionBar</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+</resources>
