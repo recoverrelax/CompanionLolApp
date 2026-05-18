@@ -4,6 +4,7 @@ import android.app.Application
 import coil3.ImageLoader
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.request.crossfade
+import coil3.util.DebugLogger
 import com.lol.app.io.initializer.Initializers
 import com.lol.app.io.initializer.InitializersImpl
 import dagger.Module
@@ -26,6 +27,7 @@ object DataModule {
   internal fun coilImageLoader(okhttpClient: OkHttpClient, context: Application): ImageLoader =
     ImageLoader.Builder(context)
       .components { add(OkHttpNetworkFetcherFactory(callFactory = { okhttpClient })) }
+      .logger(DebugLogger())
       .crossfade(true)
       .build()
 }

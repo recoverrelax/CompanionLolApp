@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CompanionLolApp</string>
+    <string name="app_name">CLolApp</string>
     <string name="champion_rotation">Champions</string>
     <string name="settings">Settings</string>
 

@@ -161,8 +161,8 @@ private fun StatusBarEffect(backStack: BackStack<*>) {
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars =
           when (screenKey) {
             InitialScreenKey,
-            LoginKey -> false
-            ChampionListKey,
+            LoginKey,
+            ChampionListKey-> false
             SettingsKey -> true
           }
       }

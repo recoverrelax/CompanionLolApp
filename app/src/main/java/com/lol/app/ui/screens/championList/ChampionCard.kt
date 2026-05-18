@@ -17,6 +17,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -42,6 +43,7 @@ import com.companion.lol.storage.impl.model.ids.ChampionId
 import com.lol.app.base.theme.FavoriteColor
 import com.lol.app.util.ChampionColorCache
 import com.lol.app.util.DominantColorCoilImage
+import timber.log.Timber
 
 private val favoriteBorderBrush =
   Brush.verticalGradient(
@@ -65,7 +67,7 @@ fun ChampionCard(
   modifier: Modifier,
   champion: ChampionModel,
   gridSize: Int,
-  placeholderColor: Color,
+  championColorCache: ChampionColorCache,
   onCardClick: (ChampionId) -> Unit,
 ) {
 
@@ -104,7 +106,7 @@ fun ChampionCard(
     championImage = champion.squareImageName,
     championName = champion.name,
     championIsFavorite = champion.isFavorite,
-    placeholderColor = placeholderColor,
+    championColorCache = championColorCache,
     textStyle = textStyle,
     textPaddingVertical = textPaddingVertical,
     cardCornerRadius = cardCornerRadius,
@@ -120,7 +122,7 @@ fun ChampionCard(
   championImage: DdragonImage,
   championName: String,
   championIsFavorite: Boolean,
-  placeholderColor: Color,
+  championColorCache: ChampionColorCache,
   textStyle: TextStyle,
   textPaddingVertical: Dp,
   cardCornerRadius: Dp = 8.dp,
@@ -129,9 +131,6 @@ fun ChampionCard(
   Card(
     modifier = modifier.clickable(onClick = onClick),
     shape = RoundedCornerShape(bottomStart = cardCornerRadius, bottomEnd = cardCornerRadius),
-    /*elevation = CardDefaults.cardElevation(
-        defaultElevation = 4.dp
-    )*/
   ) {
     OverLapColumn(
       modifier = Modifier.fillMaxWidth(),
@@ -140,8 +139,7 @@ fun ChampionCard(
           DominantColorCoilImage(
             modifier = Modifier.fillMaxSize(),
             image = championImage,
-            updatePalette = true,
-            placeholderColor = placeholderColor,
+            championColorCache = championColorCache,
             imageModifier =
               Modifier.drawWithContent {
                   drawContent()
@@ -160,7 +158,7 @@ fun ChampionCard(
       overlap = {
         val animatedDominantColor =
           animateColorAsState(
-            targetValue = ChampionColorCache.getColor(championId).value ?: placeholderColor,
+            targetValue = championColorCache.getColor(championId),
             animationSpec = tween(250),
             label = "",
           )
