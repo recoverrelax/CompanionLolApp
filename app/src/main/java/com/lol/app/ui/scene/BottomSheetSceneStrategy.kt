@@ -4,10 +4,6 @@ package com.lol.app.ui.scene
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -49,7 +45,7 @@ private  data class BottomSheetScene<T : Any>(
             onDismissRequest = onBack,
             properties = modalBottomSheetProperties,
             sheetState = rememberModalBottomSheetState(
-                skipPartiallyExpanded = false
+                skipPartiallyExpanded = true
             ),
             contentWindowInsets = { WindowInsets(0) },
             containerColor = DarkPlatinium,
@@ -76,7 +72,6 @@ private  data class BottomSheetScene<T : Any>(
  * This strategy should always be added before any non-overlay scene strategies.
  */
 class BottomSheetSceneStrategy<T : Any> : SceneStrategy<T> {
-
     override fun SceneStrategyScope<T>.calculateScene(entries: List<NavEntry<T>>): Scene<T>? {
         val lastEntry: NavEntry<T> = entries.lastOrNull() ?: return null
         val bottomSheetProperties = lastEntry.metadata[BottomSheetKey] ?: return null
@@ -101,7 +96,9 @@ class BottomSheetSceneStrategy<T : Any> : SceneStrategy<T> {
          */
         fun bottomSheet(modalBottomSheetProperties: ModalBottomSheetProperties = ModalBottomSheetProperties(
             isAppearanceLightStatusBars = false,
-            isAppearanceLightNavigationBars = false
+            isAppearanceLightNavigationBars = false,
+            shouldDismissOnBackPress = true,
+            shouldDismissOnClickOutside = true
         )): Map<String, Any> =
             metadata {
                 put(BottomSheetKey, modalBottomSheetProperties)
