@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
   alias(libs.plugins.android.library)
   alias(libs.plugins.ksp)
@@ -10,6 +12,20 @@ android {
 
   buildFeatures {
     buildConfig = true
+  }
+
+  defaultConfig {
+    // Load the property
+    val localProperties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+      localProperties.load(localPropertiesFile.inputStream())
+    }
+
+    val apiKey = localProperties.getProperty("riotApiKey") ?: "\"\""
+
+    // Create the BuildConfig field
+    buildConfigField("String", "RIOT_API_KEY", apiKey)
   }
 }
 
