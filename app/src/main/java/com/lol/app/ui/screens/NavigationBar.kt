@@ -1,6 +1,7 @@
 package com.lol.app.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Settings
@@ -12,13 +13,16 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation3.runtime.NavMetadataKey
 import androidx.navigation3.runtime.metadata
 import com.companion.lol.app.R
+import com.lol.app.base.CompanionAppPreview
+import com.lol.app.base.CompanionAppPreviewWrapperProvider
+import com.lol.app.base.material3.companionAppGradient
 import com.lol.app.navigation.BackStack
 import com.lol.app.navigation.ChampionListKey
 import com.lol.app.navigation.ScreenKey
@@ -29,24 +33,19 @@ object NavigationBarScreen : NavMetadataKey<Boolean> {
 }
 
 @Composable
-fun NavigationBar(backStack: BackStack<ScreenKey>) {
+fun NavigationBar(modifier: Modifier = Modifier, backStack: BackStack<ScreenKey>) {
   val screenKey = backStack.current
 
   NavigationBar(
     containerColor = Color.Transparent,
-    modifier =
-      Modifier.background(
-        brush =
-          Brush.verticalGradient(
-            colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.tertiary)
-          )
-      ),
+    modifier = modifier.background(brush = companionAppGradient),
   ) {
     val colors =
       NavigationBarItemDefaults.colors(
-        unselectedIconColor = MaterialTheme.colorScheme.secondary,
-        unselectedTextColor = MaterialTheme.colorScheme.secondary,
-        indicatorColor = MaterialTheme.colorScheme.secondary,
+        selectedTextColor = MaterialTheme.colorScheme.primary,
+        unselectedIconColor = MaterialTheme.colorScheme.onSecondary,
+        unselectedTextColor = MaterialTheme.colorScheme.onSecondary,
+        indicatorColor = MaterialTheme.colorScheme.primary,
       )
 
     NavigationBarItem(
@@ -65,4 +64,26 @@ fun NavigationBar(backStack: BackStack<ScreenKey>) {
       onClick = dropUnlessResumed { backStack.goTo(SettingsKey) },
     )
   }
+}
+
+@Composable
+@CompanionAppPreview
+@PreviewWrapper(CompanionAppPreviewWrapperProvider::class)
+private fun Preview() {
+  NavigationBar(
+    modifier = Modifier.fillMaxWidth(),
+    backStack =
+      object : BackStack<ScreenKey> {
+        override val history: List<ScreenKey> = listOf()
+        override val current: ScreenKey = ChampionListKey
+
+        override fun goTo(key: ScreenKey) = Unit
+
+        override fun setHistory(singleKey: ScreenKey) = Unit
+
+        override fun setHistory(newHistory: List<ScreenKey>) = Unit
+
+        override fun goBack(): Boolean = true
+      },
+  )
 }

@@ -3,7 +3,6 @@ package com.lol.app.ui.screens.championList
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -39,27 +38,9 @@ import androidx.compose.ui.unit.sp
 import com.companion.lol.data.DdragonImage
 import com.companion.lol.data.model.ChampionModel
 import com.companion.lol.storage.impl.model.ids.ChampionId
-import com.lol.app.base.theme.FavoriteColor
 import com.lol.app.util.ChampionColorCache
 import com.lol.app.util.DominantColorCoilImage
 import com.lol.app.util.LocalChampionColorCache
-
-private val favoriteBorderBrush =
-  Brush.verticalGradient(
-    colors = listOf(FavoriteColor, Color.Transparent),
-    tileMode = TileMode.Mirror,
-  )
-private val favoriteOverlayBrush =
-  Brush.verticalGradient(
-    colors = listOf(Color.Transparent, FavoriteColor.copy(alpha = 0.5f)),
-    tileMode = TileMode.Mirror,
-  )
-
-private val textOverlapGradient =
-  Brush.verticalGradient(
-    colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.7f)),
-    tileMode = TileMode.Mirror,
-  )
 
 @Composable
 fun ChampionCard(
@@ -114,7 +95,6 @@ fun ChampionCard(
   )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ChampionCard(
   modifier: Modifier,
@@ -128,6 +108,23 @@ fun ChampionCard(
   cardCornerRadius: Dp = 8.dp,
   onClick: () -> Unit,
 ) {
+  val favoriteBorderBrush =
+    Brush.verticalGradient(
+      colors = listOf(MaterialTheme.colorScheme.primary, Color.Transparent),
+      tileMode = TileMode.Mirror,
+    )
+  val favoriteOverlayBrush =
+    Brush.verticalGradient(
+      colors = listOf(Color.Transparent, MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)),
+      tileMode = TileMode.Mirror,
+    )
+
+  val textOverlapGradient =
+    Brush.verticalGradient(
+      colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.7f)),
+      tileMode = TileMode.Mirror,
+    )
+
   Card(
     modifier = modifier.clickable(onClick = onClick),
     shape = RoundedCornerShape(bottomStart = cardCornerRadius, bottomEnd = cardCornerRadius),
@@ -174,7 +171,7 @@ fun ChampionCard(
               .offset(y = (-2).dp)
               .padding(vertical = textPaddingVertical),
           text = championName,
-          color = Color.White,
+          color = MaterialTheme.colorScheme.onBackground,
           style = textStyle,
           textAlign = TextAlign.Center,
           maxLines = 1,

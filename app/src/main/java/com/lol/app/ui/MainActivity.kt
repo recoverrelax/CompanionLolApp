@@ -4,7 +4,6 @@ package com.lol.app.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -23,10 +22,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.unit.IntOffset
@@ -61,9 +58,6 @@ import com.lol.app.ui.screens.login.LoginScreen
 import com.lol.app.ui.screens.settings.SettingsScreen
 import com.lol.app.util.LocalChampionColorCache
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
 
 val LocalContentPadding = compositionLocalOf { PaddingValues.Zero }
 
@@ -91,6 +85,7 @@ class MainActivity : ComponentActivity() {
     installSplashScreen()
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
+    WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = false
     setContent { MainScreen() }
   }
 }
@@ -103,12 +98,10 @@ private fun MainScreen() {
 
     val bottomSheetStrategy = rememberBottomSheetSceneStrategy<ScreenKey>()
 
-    StatusBarEffect(backStack)
-
     SharedTransitionLayout {
       val navigationBarDecoratorStrategy =
         rememberNavigationBarDecoratorStrategy<ScreenKey>(
-          navBar = { NavigationBar(backStack) },
+          navBar = { NavigationBar(backStack = backStack) },
           sharedTransitionScope = this,
         )
 
@@ -158,28 +151,6 @@ private fun MainScreen() {
 @Composable
 private fun PlaceHolderScreen() {
   CompanionAppSurface(modifier = Modifier.fillMaxSize()) {}
-}
-
-@Composable
-private fun StatusBarEffect(backStack: BackStack<ScreenKey>) {
-  val activity = checkNotNull(LocalActivity.current)
-  LaunchedEffect(activity, backStack) {
-    snapshotFlow { backStack.current }
-      .filterNotNull()
-      .distinctUntilChanged()
-      .collectLatest { screenKey ->
-        val window = activity.window
-
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars =
-          when (screenKey) {
-            InitialScreenKey,
-            LoginKey,
-            ChampionListKey,
-            is ChampionDetailsKey -> false
-            SettingsKey -> true
-          }
-      }
-  }
 }
 
 @Composable

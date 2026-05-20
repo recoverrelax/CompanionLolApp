@@ -20,8 +20,8 @@ import androidx.compose.ui.unit.times
 @Composable
 fun TitleHeader(
   modifier: Modifier,
-  borderColor: Color = Color.White,
-  contentColor: Color = Color.White,
+  borderColor: Color = MaterialTheme.colorScheme.outline,
+  contentColor: Color = MaterialTheme.colorScheme.onBackground,
   borderWidth: Dp = 1.dp,
   cornerRadius: Dp = 6.dp,
   label: String,

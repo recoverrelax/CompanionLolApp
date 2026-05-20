@@ -47,8 +47,6 @@ import com.companion.lol.data.model.other.ChampionSkin
 import com.companion.lol.storage.impl.model.ids.ChampionId
 import com.companion.lol.storage.impl.model.other.ChampionTag
 import com.lol.app.base.material3.TitleHeader
-import com.lol.app.base.theme.DarkPlatinium
-import com.lol.app.base.theme.SharpNight
 import com.lol.app.ui.LocalContentPadding
 import com.lol.app.util.ChampionColorCache
 import com.lol.app.util.DominantColorCoilImage
@@ -56,8 +54,6 @@ import com.lol.app.util.EMPTY_STRING
 import com.lol.app.util.LocalChampionColorCache
 import com.lol.app.util.color
 import com.lol.app.util.icon
-
-private val topActionIconBg = Color.White.copy(alpha = 0.5f)
 
 @Composable
 fun ChampionDetailsScreen(championId: ChampionId) {
@@ -120,7 +116,6 @@ fun ChampionDetailsScreen(state: ChampionDetailsState, onFavoritesClicked: () ->
       modifier = Modifier.padding(horizontal = 16.dp),
       text = state.details?.lore ?: EMPTY_STRING,
       style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.ExtraLight),
-      color = Color.White,
       textAlign = TextAlign.Justify,
     )
   }
@@ -138,6 +133,8 @@ private fun ImageHeader(
   championTitle: String,
 ) {
   val championSkins = rememberChampionSkinImageProvider(championId = championId, skins = skins)
+  val topActionIconBg = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)
+  val iconTint = MaterialTheme.colorScheme.onSurface
 
   Box(modifier = Modifier.fillMaxWidth().aspectRatio(1215f / 717f)) {
     DominantColorCoilImage(
@@ -158,7 +155,7 @@ private fun ImageHeader(
           .align(Alignment.TopStart),
       imageVector = if (isFavourite) Icons.Rounded.Star else Icons.Outlined.StarBorder,
       contentDescription = null,
-      tint = if (!isFavourite) SharpNight else dominantColor,
+      tint = if (!isFavourite) iconTint else dominantColor,
     )
 
     Icon(
@@ -171,7 +168,7 @@ private fun ImageHeader(
           .align(Alignment.TopEnd),
       imageVector = Icons.Rounded.Refresh,
       contentDescription = null,
-      tint = SharpNight,
+      tint = iconTint,
     )
 
     val textOverlapGradient =
@@ -193,16 +190,11 @@ private fun ImageHeader(
         modifier = Modifier.height(IntrinsicSize.Max).offset(x = (-4).dp),
         verticalAlignment = Alignment.CenterVertically,
       ) {
-        Text(
-          text = championName,
-          style = MaterialTheme.typography.headlineMedium,
-          color = Color.White,
-        )
+        Text(text = championName, style = MaterialTheme.typography.headlineMedium)
       }
       Text(
         text = championTitle,
         style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Light),
-        color = Color.White,
       )
     }
   }
@@ -226,10 +218,10 @@ fun ChampionPartyType(modifier: Modifier, header: String, label: String, color: 
         contentAlignment = Alignment.Center,
       ) {
         Text(
-          modifier = Modifier.widthIn(min = 32.dp),
+          modifier = Modifier.widthIn(min = 40.dp),
           text = label,
-          color = Color.White,
           style = MaterialTheme.typography.labelSmall,
+          textAlign = TextAlign.Center,
         )
       }
     }
@@ -257,8 +249,8 @@ private fun Tag(
   modifier: Modifier = Modifier,
   icon: Int,
   label: String,
-  tagBackground: Color = Color.White,
-  tagColor: Color = DarkPlatinium,
+  tagBackground: Color = MaterialTheme.colorScheme.surfaceVariant,
+  tagColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
 ) {
   Row(
     modifier =

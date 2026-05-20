@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.palette.graphics.Palette
 import com.companion.lol.storage.impl.model.ids.ChampionId
-import com.lol.app.base.theme.PremiumGreen
+import com.lol.app.base.theme.Gold1
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -29,8 +29,7 @@ interface ChampionColorCache {
 
   fun extractColor(input: coil3.Bitmap, championId: ChampionId)
 
-  class Impl(scope: CoroutineScope, override val defaultColor: Color = PremiumGreen) :
-    ChampionColorCache {
+  class Impl(scope: CoroutineScope, override val defaultColor: Color = Gold1) : ChampionColorCache {
     private val cache = hashMapOf<ChampionId, MutableState<Color>>()
     private val extractChannel =
       Channel<Pair<ChampionId, coil3.Bitmap>>(capacity = Channel.UNLIMITED)

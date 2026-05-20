@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.companion.lol.data.usecase.SessionUseCase
 import com.companion.lol.storage.impl.model.ids.ChampionId
-import com.lol.app.base.theme.PremiumGreen
+import com.lol.app.base.theme.Gold1
 import com.lol.app.navigation.BackStack
 import com.lol.app.navigation.ChampionDetailsKey
 import com.lol.app.navigation.ChampionListKey
@@ -28,7 +28,7 @@ constructor(private val sessionUseCase: SessionUseCase, savedStateHandle: SavedS
   val backStack: BackStack<ScreenKey> =
     BackStack.Impl(savedStateHandle = savedStateHandle, initialHistory = listOf(InitialScreenKey))
   val colorCache: ChampionColorCache =
-    ChampionColorCache.Impl(scope = viewModelScope, defaultColor = PremiumGreen)
+    ChampionColorCache.Impl(scope = viewModelScope, defaultColor = Gold1)
 
   init {
     if (backStack.history.contains(InitialScreenKey)) {

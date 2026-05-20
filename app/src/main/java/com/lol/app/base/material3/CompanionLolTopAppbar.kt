@@ -5,6 +5,7 @@ package com.lol.app.base.material3
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -17,11 +18,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewWrapper
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.companion.lol.app.R
 import com.lol.app.base.CompanionAppPreview
 import com.lol.app.base.CompanionAppPreviewWrapperProvider
@@ -44,12 +48,16 @@ fun CompanionLolTopAppbar(
       navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
       actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
     ),
+  windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
+  expandedHeight: Dp = TopAppBarDefaults.TopAppBarExpandedHeight,
+  scrollBehavior: TopAppBarScrollBehavior? = null,
   actions: @Composable RowScope.() -> Unit = {},
 ) {
   TopAppBar(
     modifier = modifier,
     title = { titleRes?.let { Text(text = stringResource(id = it)) } },
     colors = colors,
+    expandedHeight = expandedHeight,
     navigationIcon = {
       if (navIcon != AppBarNavIcon.NONE) {
         val backPress = LocalOnBackPressedDispatcherOwner.current
@@ -59,6 +67,8 @@ fun CompanionLolTopAppbar(
       }
     },
     actions = actions,
+    scrollBehavior = scrollBehavior,
+    windowInsets = windowInsets,
   )
 }
 
@@ -68,6 +78,8 @@ fun CompanionLolTopAppbar(
 private fun Preview() {
   CompanionLolTopAppbar(
     modifier = Modifier.fillMaxWidth(),
+    windowInsets = WindowInsets(),
+    expandedHeight = TopAppBarDefaults.TopAppBarExpandedHeight + 24.dp,
     titleRes = R.string.app_name,
     navIcon = AppBarNavIcon.UP,
   )

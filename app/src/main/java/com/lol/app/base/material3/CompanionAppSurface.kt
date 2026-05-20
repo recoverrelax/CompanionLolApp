@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.NonRestartableComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -20,6 +21,22 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.isContainer
 import androidx.compose.ui.semantics.semantics
 import com.lol.app.ui.LocalContentPadding
+
+val companionAppGradient: Brush
+  @Stable
+  @Composable
+  get() =
+    Brush.verticalGradient(
+      colors = listOf(MaterialTheme.colorScheme.secondary, MaterialTheme.colorScheme.tertiary)
+    )
+
+val companionAppGradientInverted: Brush
+  @Stable
+  @Composable
+  get() =
+    Brush.verticalGradient(
+      colors = listOf(MaterialTheme.colorScheme.tertiary, MaterialTheme.colorScheme.secondary)
+    )
 
 @Composable
 @NonRestartableComposable
@@ -37,14 +54,7 @@ fun CompanionAppSurface(
       modifier =
         modifier
           .then(if (border != null) Modifier.border(border, shape) else Modifier)
-          .background(
-            brush =
-              Brush.verticalGradient(
-                colors =
-                  listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.tertiary)
-              ),
-            shape = shape,
-          )
+          .background(brush = companionAppGradient, shape = shape)
           .then(
             if (insetStatusBar) {
               Modifier.padding(top = LocalContentPadding.current.calculateTopPadding())

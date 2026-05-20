@@ -1,6 +1,7 @@
 package com.lol.app.ui.screens.championList
 
 import androidx.annotation.StringRes
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,17 +13,23 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuItemColors
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -31,18 +38,44 @@ import com.companion.lol.app.R
 import com.companion.lol.storage.impl.model.other.SortOrder
 import com.lol.app.base.material3.AppBarNavIcon
 import com.lol.app.base.material3.CompanionLolTopAppbar
+import com.lol.app.base.material3.companionAppGradientInverted
 
+@ExperimentalMaterial3Api
 @Composable
 fun ChampionListToolbar(
   modifier: Modifier,
+  scrollBehavior: TopAppBarScrollBehavior? = null,
   sortOrder: SortOrder,
   onGridSizeItemMenuClicked: () -> Unit,
   onSortMenuItemClicked: () -> Unit,
   onClearFavoritesMenuItemClicked: () -> Unit,
 ) {
 
+  val gradient = companionAppGradientInverted
+
+  val alpha =
+    remember(scrollBehavior) {
+      derivedStateOf {
+        if (scrollBehavior == null) {
+          1f
+        } else {
+          val fraction = 1f - scrollBehavior.state.collapsedFraction
+          LinearOutSlowInEasing.transform(fraction)
+        }
+      }
+    }
+
   CompanionLolTopAppbar(
-    modifier = modifier,
+    modifier = modifier.drawBehind { drawRect(brush = gradient, alpha = alpha.value) },
+    colors =
+      TopAppBarDefaults.topAppBarColors(
+        containerColor = Color.Transparent,
+        scrolledContainerColor = Color.Transparent,
+        titleContentColor = MaterialTheme.colorScheme.onSurface,
+        navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+        actionIconContentColor = MaterialTheme.colorScheme.onSurface,
+      ),
+    scrollBehavior = scrollBehavior,
     navIcon = AppBarNavIcon.CLOSE,
     titleRes = R.string.champion_rotation,
     actions = {

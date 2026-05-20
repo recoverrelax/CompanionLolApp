@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -21,7 +20,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -59,14 +57,14 @@ fun LoginScreen(state: LoginState, onEmailChanged: (String) -> Unit, onLoginClic
           text = "Welcome",
           style = MaterialTheme.typography.displaySmall,
           fontWeight = FontWeight.ExtraBold,
-          color = Color.White,
+          color = MaterialTheme.colorScheme.onBackground,
           textAlign = TextAlign.Center,
         )
 
         Text(
           text = "Sign in to your account",
           style = MaterialTheme.typography.bodyLarge,
-          color = Color.White.copy(alpha = 0.8f),
+          color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
           textAlign = TextAlign.Center,
         )
 
@@ -75,21 +73,17 @@ fun LoginScreen(state: LoginState, onEmailChanged: (String) -> Unit, onLoginClic
         OutlinedTextField(
           value = state.email,
           onValueChange = onEmailChanged,
-          label = { Text("Email Address", color = Color.White.copy(alpha = 0.7f)) },
+          label = {
+            Text("Email Address", color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f))
+          },
           modifier = Modifier.padding(horizontal = 32.dp).fillMaxWidth(),
           singleLine = true,
           shape = RoundedCornerShape(16.dp),
           colors =
             OutlinedTextFieldDefaults.colors(
-              focusedBorderColor = Color.White,
-              unfocusedBorderColor = Color.White.copy(alpha = 0.5f),
-              focusedTextColor = Color.White,
-              unfocusedTextColor = Color.White,
-              cursorColor = Color.White,
-              focusedLabelColor = Color.White,
-              unfocusedLabelColor = Color.White.copy(alpha = 0.7f),
-              focusedContainerColor = Color.White.copy(alpha = 0.1f),
-              unfocusedContainerColor = Color.White.copy(alpha = 0.1f),
+              unfocusedLabelColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+              focusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
+              unfocusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
             ),
           keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
         )
@@ -100,13 +94,6 @@ fun LoginScreen(state: LoginState, onEmailChanged: (String) -> Unit, onLoginClic
         enabled = state.isEmailValid,
         modifier = Modifier.imePadding().padding(32.dp).fillMaxWidth().height(64.dp),
         shape = RoundedCornerShape(16.dp),
-        colors =
-          ButtonDefaults.buttonColors(
-            containerColor = Color.White,
-            contentColor = Color.Black,
-            disabledContainerColor = Color.White.copy(alpha = 0.3f),
-            disabledContentColor = Color.White.copy(alpha = 0.5f),
-          ),
       ) {
         Text(text = "Continue", fontSize = 18.sp, fontWeight = FontWeight.Bold)
       }
