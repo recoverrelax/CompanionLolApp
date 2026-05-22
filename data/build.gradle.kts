@@ -12,6 +12,7 @@ dependencies {
   implementation(project(":network"))
   api(project(":storage:impl"))
 
+  implementation(libs.io.timber)
   implementation(libs.android.hilt)
   ksp(libs.android.hilt.compiler)
 

@@ -35,6 +35,7 @@ fun ChampionListScreen(onCardClick: (ChampionId) -> Unit) {
     onSortMenuItemClicked = viewModel::onSortMenuItemClicked,
     onFavoritesClearClicked = viewModel::onFavoritesClearClicked,
     onRefresh = viewModel::onRefresh,
+    onRetry = viewModel::onRetry,
   )
 }
 
@@ -46,6 +47,7 @@ fun ChampionListScreen(
   onSortMenuItemClicked: () -> Unit,
   onFavoritesClearClicked: () -> Unit,
   onRefresh: () -> Unit,
+  onRetry: () -> Unit,
 ) {
 
   val listState = rememberLazyGridState()
@@ -72,30 +74,34 @@ fun ChampionListScreen(
       onRefresh = onRefresh,
       indicatorContentPadding = contentPadding,
     ) {
-      LazyVerticalGrid(
-        modifier = Modifier.fillMaxSize(),
-        state = listState,
-        // prevent scrolling ON the list while refreshing
-        userScrollEnabled = !state.isRefreshing,
-        columns = GridCells.Fixed(state.gridSize),
-        contentPadding =
-          PaddingValues(
-            start = 4.dp,
-            end = 4.dp,
-            top = 4.dp + contentPadding.calculateTopPadding(),
-            bottom = 4.dp,
-          ),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-      ) {
-        items(items = state.champions, key = { it.id.value }) { item ->
-          ChampionCard(
-            modifier = Modifier.fillMaxWidth().animateItem(),
-            champion = item,
-            onCardClick = onCardClick,
-            gridSize = state.gridSize,
-          )
+      if (!state.showError) {
+        LazyVerticalGrid(
+          modifier = Modifier.fillMaxSize(),
+          state = listState,
+          // prevent scrolling ON the list while refreshing
+          userScrollEnabled = !state.isRefreshing,
+          columns = GridCells.Fixed(state.gridSize),
+          contentPadding =
+            PaddingValues(
+              start = 4.dp,
+              end = 4.dp,
+              top = 4.dp + contentPadding.calculateTopPadding(),
+              bottom = 4.dp,
+            ),
+          horizontalArrangement = Arrangement.spacedBy(16.dp),
+          verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+          items(items = state.champions, key = { it.id.value }) { item ->
+            ChampionCard(
+              modifier = Modifier.fillMaxWidth().animateItem(),
+              champion = item,
+              onCardClick = onCardClick,
+              gridSize = state.gridSize,
+            )
+          }
         }
+      } else {
+        SyncErrorContent(modifier = Modifier.fillMaxSize(), onRetry = onRetry)
       }
     }
   }

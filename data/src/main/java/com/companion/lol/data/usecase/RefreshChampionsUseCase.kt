@@ -11,6 +11,7 @@ import com.companion.lol.storage.impl.util.withDbContext
 import com.companion.lol.storage.sqldelight.tables.ChampionPartyTypeTable
 import com.companion.lol.storage.sqldelight.tables.ChampionTable
 import com.companion.lol.util.capitalizeWords
+import com.companion.lol.util.catchIoException
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.invoke
@@ -24,8 +25,9 @@ constructor(
   private val api: DDragonApi,
   private val transacter: CompanionLolTransactor,
 ) {
-  suspend fun refresh() = withDbContext {
-    val champions = api.getChampionList()
+  suspend fun refresh(): Boolean = withDbContext {
+    val champions = catchIoException { api.getChampionList() } ?: return@withDbContext false
+
     transacter.transaction {
       champions.champions
         .map {
@@ -48,6 +50,7 @@ constructor(
           )
         }
     }
+    return@withDbContext true
   }
 
   suspend fun hasData(): Boolean = dbDispatcher {
