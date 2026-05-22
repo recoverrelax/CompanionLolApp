@@ -13,8 +13,7 @@ data class ChampionListState(
   val sortOrder: SortOrder = SortOrder.ASC,
   private val refreshState: RefreshState = RefreshState(),
 ) : ComposeState {
-  val isRefreshing: Boolean = refreshState.isRefreshing
+  val isRefreshing: Boolean = refreshState.refreshing
 
-  val showError: Boolean =
-    !refreshState.isInitialSync && refreshState.withError && champions.isEmpty()
+  val showError: Boolean = !refreshState.initialSync && refreshState.hasError && champions.isEmpty()
 }

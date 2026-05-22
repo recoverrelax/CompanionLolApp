@@ -9,6 +9,7 @@ import com.companion.lol.data.usecase.RefreshChampionsUseCase
 import com.companion.lol.data.usecase.SettingsUseCase
 import com.companion.lol.storage.impl.model.other.SortOrder
 import com.lol.app.ui.screens.RefreshState
+import com.lol.app.util.awaitAtLeast
 import com.lol.app.util.toggle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -55,36 +56,32 @@ constructor(
 
   init {
     viewModelScope.launch {
-      refreshState.filter { it.isRefreshing }.map { it.isForced }.collectLatest(::refresh)
+      refreshState.filter { it.refreshing }.map { it.isForced }.collectLatest(::refresh)
     }
   }
 
   fun onRefresh() {
-    refreshState.update { it.copy(isRefreshing = true, isForced = true, withError = false) }
+    refreshState.update { it.copy(refreshing = true, isForced = true, hasError = false) }
   }
 
   fun onRetry() = onRefresh()
 
-  private suspend fun refresh(manualRefresh: Boolean) {
-    if (manualRefresh || !refreshChampionsUseCase.hasData()) {
-      delay(showCaseArtificialAnimationDelay)
-      val success = refreshChampionsUseCase.refresh()
+  private suspend fun refresh(isForced: Boolean) {
+    if (isForced || !refreshChampionsUseCase.hasData()) {
+      val success =
+        awaitAtLeast(showCaseArtificialAnimationDelay) { refreshChampionsUseCase.refresh() }
+
       refreshState.value =
         RefreshState(
-          isRefreshing = false,
-          isInitialSync = false,
-          isForced = manualRefresh,
-          withError = !success,
+          refreshing = false,
+          initialSync = false,
+          isForced = isForced,
+          hasError = !success,
         )
     } else {
       delay(showCaseArtificialAnimationDelay)
       refreshState.value =
-        RefreshState(
-          isRefreshing = false,
-          isInitialSync = false,
-          isForced = false,
-          withError = false,
-        )
+        RefreshState(refreshing = false, initialSync = false, isForced = false, hasError = false)
     }
   }
 

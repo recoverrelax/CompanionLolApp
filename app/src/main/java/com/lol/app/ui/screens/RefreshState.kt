@@ -1,8 +1,8 @@
 package com.lol.app.ui.screens
 
 data class RefreshState(
-  val isRefreshing: Boolean = true,
-  val isInitialSync: Boolean = true,
+  val refreshing: Boolean = true,
+  val initialSync: Boolean = true,
   val isForced: Boolean = false,
-  val withError: Boolean = false,
+  val hasError: Boolean = false,
 )
