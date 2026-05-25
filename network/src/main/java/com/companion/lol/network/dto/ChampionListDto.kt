@@ -1,11 +1,9 @@
 package com.companion.lol.network.dto
 
 import androidx.annotation.Keep
+import com.companion.lol.network.serializer.ChampionListDtoSerializer
 import kotlinx.serialization.Serializable
 
-@Serializable
+@Serializable(with = ChampionListDtoSerializer::class)
 @Keep
-@Suppress("CanBeParameter")
-class ChampionListDto(private val data: HashMap<String, ChampionDto>) {
-  val champions: List<ChampionDto> = data.values.toList()
-}
+class ChampionListDto(val champions: List<ChampionDto>)

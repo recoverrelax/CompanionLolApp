@@ -62,7 +62,7 @@ constructor(
             lore = champion.lore,
             blurb = champion.blurb,
             tags = champion.tags.map { ChampionTag.from(it) },
-            partyTypeId = PartyType.from(champion.partytype).dbId,
+            partyTypeId = PartyType.from(champion.partyType).dbId,
           )
         )
         skinsStore.insertAll(skins)
