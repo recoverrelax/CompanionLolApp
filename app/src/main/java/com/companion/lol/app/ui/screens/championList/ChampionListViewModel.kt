@@ -45,7 +45,7 @@ constructor(
   val state: StateFlow<ChampionListState> =
     combine(
         flow = championStore.observeAllWithFavorites().listMap(ChampionWithFavoritesView::model),
-        flow2 = settingsStore.observe(),
+        flow2 = settingsStore.observeOrDefault(),
         flow3 = refreshState,
         transform = { champion, settings, refreshState ->
           ChampionListState(

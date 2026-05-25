@@ -41,22 +41,22 @@ constructor(
           }
           .info
 
-      transacter.transaction {
-        val skins =
-          champion.skins
-            // parentSkin are chroma skins, don't map directly to url
-            .filter { it.parentSkin == null }
-            .map {
-              SkinTable(
-                id = championId,
-                skinId = SkinId(it.id),
-                number = it.num,
-                name = it.name,
-                isChroma = it.chromas,
-              )
-            }
+      val skins =
+        champion.skins
+          // parentSkin are chroma skins, don't map directly to url
+          .filter { it.parentSkin == null }
+          .map {
+            SkinTable(
+              id = championId,
+              skinId = SkinId(it.id),
+              number = it.num,
+              name = it.name,
+              isChroma = it.chromas,
+            )
+          }
 
-        championDetailsStore.insert(
+      transacter.transaction {
+        championDetailsStore.insertSync(
           ChampionDetailsTable(
             id = championId,
             lore = champion.lore,
@@ -65,7 +65,7 @@ constructor(
             partyTypeId = PartyType.from(champion.partyType).dbId,
           )
         )
-        skinsStore.insertAll(skins)
+        skinsStore.insertAllSync(skins)
       }
       return@withContext Result.success(Unit)
     }

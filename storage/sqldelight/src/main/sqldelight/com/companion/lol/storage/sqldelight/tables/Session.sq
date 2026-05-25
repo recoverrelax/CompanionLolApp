@@ -1,7 +1,6 @@
 import com.companion.lol.storage.impl.model.ids.SessionId;
 import kotlin.Boolean;
 
-
 CREATE TABLE SessionTable (
   id INTEGER AS SessionId PRIMARY KEY NOT NULL,
   emailAddress TEXT NOT NULL,

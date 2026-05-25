@@ -6,7 +6,7 @@ import com.companion.lol.data.model.other.ChampionSkin
 import com.companion.lol.storage.sqldelight.tables.ChampionDetailsTable
 import com.companion.lol.storage.sqldelight.tables.SkinTable
 
-internal fun ChampionDetailsTable.model(keyName: String, skins: List<SkinTable>) =
+fun ChampionDetailsTable.model(keyName: String, skins: List<SkinTable>) =
   ChampionDetailsModel(
     lore = this.lore,
     blurb = this.blurb,

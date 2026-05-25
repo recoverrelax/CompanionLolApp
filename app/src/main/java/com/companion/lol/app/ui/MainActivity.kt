@@ -80,7 +80,7 @@ private fun MainScreen(
   colorCache: ChampionColorCache,
   backStack: BackStack<ScreenKey>,
 ) {
-  snackBarManager.HandleReceivingErrorEffect { error ->
+  snackBarManager.ShowSnackBarMessagesEffect { error ->
     showSnackbar(error.message, duration = SnackbarDuration.Short)
   }
 

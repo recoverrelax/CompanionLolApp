@@ -53,10 +53,12 @@ import com.companion.lol.app.compose.app.TitleHeader
 import com.companion.lol.app.io.UiError
 import com.companion.lol.app.ui.LocalContentPadding
 import com.companion.lol.app.ui.LocalSnackBarManager
+import com.companion.lol.app.ui.SnackBarManager
 import com.companion.lol.app.util.ChampionColorCache
 import com.companion.lol.app.util.DominantColorCoilImage
 import com.companion.lol.app.util.EMPTY_STRING
 import com.companion.lol.app.util.LocalChampionColorCache
+import com.companion.lol.app.util.UiMessageEventFlow
 import com.companion.lol.app.util.color
 import com.companion.lol.app.util.icon
 import com.companion.lol.storage.impl.model.ids.ChampionId
@@ -72,22 +74,35 @@ fun ChampionDetailsScreen(championId: ChampionId, goBack: () -> Unit) {
   val state by viewModel.state.collectAsStateWithLifecycle()
   val snackBarManager = LocalSnackBarManager.current
 
-  LaunchedEffect(viewModel.errorOnFetch) {
-    viewModel.errorOnFetch.receive()
-    snackBarManager.addError(UiError(message = "Cannot load the details data"))
-    goBack()
-  }
-
-  ChampionDetailsScreen(state = state, onFavoritesClicked = viewModel::onFavoritesClicked)
+  ChampionDetailsScreen(
+    state = state,
+    snackBarManager = snackBarManager,
+    uiErrors = viewModel.uiErrors,
+    goBack = goBack,
+    onFavoritesClicked = viewModel::onFavoritesClicked,
+  )
 }
 
 @Composable
-fun ChampionDetailsScreen(state: ChampionDetailsState, onFavoritesClicked: () -> Unit) {
+fun ChampionDetailsScreen(
+  state: ChampionDetailsState,
+  snackBarManager: SnackBarManager,
+  uiErrors: UiMessageEventFlow<UiError>,
+  goBack: () -> Unit,
+  onFavoritesClicked: () -> Unit,
+) {
   val championId = state.championId
   val championColorCache = LocalChampionColorCache.current
 
   val championSkinsProvider =
     rememberChampionSkinImageProvider(championId = championId, skins = state.details?.skins)
+
+  LaunchedEffect(uiErrors) {
+    uiErrors.collect {
+      snackBarManager.addError(it)
+      goBack()
+    }
+  }
 
   Column(
     modifier =

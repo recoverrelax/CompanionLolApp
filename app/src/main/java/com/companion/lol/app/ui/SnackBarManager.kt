@@ -16,7 +16,7 @@ interface SnackBarManager {
 
   suspend fun addError(error: UiError)
 
-  @Composable fun HandleReceivingErrorEffect(error: suspend SnackbarHostState.(UiError) -> Unit)
+  @Composable fun ShowSnackBarMessagesEffect(error: suspend SnackbarHostState.(UiError) -> Unit)
 }
 
 private class Impl(override val snackBarHostState: SnackbarHostState) : SnackBarManager {
@@ -24,7 +24,7 @@ private class Impl(override val snackBarHostState: SnackbarHostState) : SnackBar
   private val pendingErrors = Channel<UiError>(3, BufferOverflow.DROP_OLDEST)
 
   @Composable
-  override fun HandleReceivingErrorEffect(error: suspend SnackbarHostState.(UiError) -> Unit) {
+  override fun ShowSnackBarMessagesEffect(error: suspend SnackbarHostState.(UiError) -> Unit) {
     LaunchedEffect(Unit) {
       pendingErrors.receiveAsFlow().collect { error -> error(snackBarHostState, error) }
     }

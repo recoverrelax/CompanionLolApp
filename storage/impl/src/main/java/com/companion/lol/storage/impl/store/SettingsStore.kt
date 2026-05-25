@@ -21,15 +21,15 @@ class SettingsStore
 @Inject
 constructor(database: LolAppDb, private val dbDispatcher: DbDispatcher) :
   SqldelightStore<SettingsQueries>(database.settingsQueries) {
-  private fun find(): SettingsTable = queries.findAll().executeAsOneOrNull() ?: default
+  private fun findOrDefaultSync(): SettingsTable = queries.findAll().executeAsOneOrNull() ?: default
 
-  fun observe(): Flow<SettingsTable> =
+  fun observeOrDefault(): Flow<SettingsTable> =
     queries.findAll().asFlow().mapToOneOrDefault(default, dbDispatcher)
 
   suspend fun insert(championGridSize: Int? = null, championSortOrder: SortOrder? = null) =
     withContext(dbDispatcher) {
       queries.transaction {
-        val current = find()
+        val current = findOrDefaultSync()
         queries.insert(
           SettingsTable(
             id = SettingsId,
