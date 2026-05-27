@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @Keep
-@Suppress("SpellCheckingInspection", "unused")
+@Suppress("unused")
 @SuppressLint("UnsafeOptInUsageError")
 class ChampionDetailsData(
   val key: String,

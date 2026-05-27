@@ -6,7 +6,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @Keep
-@Suppress("SpellCheckingInspection")
 @SuppressLint("UnsafeOptInUsageError")
 class ChampionSkins(
   val id: Int,
