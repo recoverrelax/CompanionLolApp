@@ -16,3 +16,5 @@ class CompanionAppPreviewWrapperProvider : PreviewWrapperProvider {
     CompanionAppTheme { content() }
   }
 }
+
+@Preview(name = "Landscape", widthDp = 800, heightDp = 400) annotation class LandscapePreview

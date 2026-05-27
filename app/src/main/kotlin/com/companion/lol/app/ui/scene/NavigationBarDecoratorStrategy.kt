@@ -5,6 +5,7 @@ import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.movableContentOf
@@ -17,6 +18,8 @@ import androidx.navigation3.scene.Scene
 import androidx.navigation3.scene.SceneDecoratorStrategy
 import androidx.navigation3.scene.SceneDecoratorStrategyScope
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
+import androidx.window.core.layout.WindowSizeClass
+import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_MEDIUM_LOWER_BOUND
 import com.companion.lol.app.navigation.keys.ScreenKey
 import com.companion.lol.app.util.cacheSize
 
@@ -56,20 +59,25 @@ fun <T : Any> rememberNavigationBarDecoratorStrategy(
   sharedTransitionScope: SharedTransitionScope,
 ): NavigationBarDecoratorStrategy<T> {
   val currentNavBar by rememberUpdatedState(navBar)
-
+  val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
   val movableNavBar = remember { movableContentOf { currentNavBar() } }
 
   return remember(sharedTransitionScope) {
-    NavigationBarDecoratorStrategy(sharedTransitionScope, movableNavBar)
+    NavigationBarDecoratorStrategy(sharedTransitionScope, windowSizeClass, movableNavBar)
   }
 }
 
 class NavigationBarDecoratorStrategy<T : Any>(
   private val sharedTransitionScope: SharedTransitionScope,
+  private val windowSizeClass: WindowSizeClass,
   private val navBarContent: @Composable () -> Unit,
 ) : SceneDecoratorStrategy<T> {
 
   override fun SceneDecoratorStrategyScope<T>.decorateScene(scene: Scene<T>): Scene<T> {
+    if (windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND)) {
+      return scene
+    }
+
     val lastEntry: NavEntry<T> = scene.entries.firstOrNull() ?: return scene
 
     val key: ScreenKey = lastEntry.metadata[ScreenKey.Companion.Id] ?: return scene

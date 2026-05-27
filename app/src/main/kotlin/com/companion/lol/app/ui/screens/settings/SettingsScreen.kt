@@ -27,13 +27,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.companion.lol.app.R
-import com.companion.lol.app.compose.ui.tooling.CompanionAppPreview
 import com.companion.lol.app.compose.ui.tooling.CompanionAppPreviewWrapperProvider
+import com.companion.lol.app.compose.ui.tooling.LandscapePreview
+import com.companion.lol.app.compose.utils.isLandscape
 import com.companion.lol.app.ui.LocalContentPadding
 
 private val rowShape = RoundedCornerShape(12.dp)
@@ -57,6 +59,9 @@ fun SettingsScreen(
   onLogoutClicked: () -> Unit,
 ) {
   val contentPadding = LocalContentPadding.current
+  val isLandscape = isLandscape()
+
+  val widthModifier = Modifier.fillMaxWidth(if (isLandscape) 0.5f else 1f)
 
   Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
     Box(
@@ -64,7 +69,7 @@ fun SettingsScreen(
         Modifier.padding(top = contentPadding.calculateTopPadding())
           .padding(horizontal = 16.dp, vertical = 24.dp)
     ) {
-      Column {
+      Column(modifier = widthModifier) {
         Text(
           text = stringResource(R.string.settings_title),
           style = MaterialTheme.typography.headlineMedium,
@@ -94,7 +99,8 @@ fun SettingsScreen(
       }
 
       Button(
-        modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
+        modifier =
+          widthModifier.align(if (isLandscape) Alignment.BottomStart else Alignment.BottomCenter),
         onClick = onLogoutClicked,
       ) {
         Text(text = stringResource(R.string.settings_logout))
@@ -146,7 +152,8 @@ private fun AutoSyncToggle(autoSyncChecked: Boolean, onAutoSyncChanged: (Boolean
 }
 
 @Composable
-@CompanionAppPreview
+@LandscapePreview
+@Preview
 @PreviewWrapper(CompanionAppPreviewWrapperProvider::class)
 private fun SettingsPreview() {
   SettingsScreen(

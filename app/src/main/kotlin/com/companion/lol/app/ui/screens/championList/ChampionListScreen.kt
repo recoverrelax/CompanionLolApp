@@ -19,6 +19,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.companion.lol.app.compose.utils.isLandscape
 import com.companion.lol.app.util.count
 import com.companion.lol.storage.impl.model.ids.ChampionId
 
@@ -49,20 +50,24 @@ fun ChampionListScreen(
   onRetry: () -> Unit,
 ) {
 
+  val isLandscape = isLandscape()
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+  val gridCells = GridCells.Fixed(if (isLandscape) 8 else state.gridSize.count)
 
   Scaffold(
     modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     topBar = {
-      ChampionListToolbar(
-        modifier = Modifier.fillMaxWidth(),
-        // needed to prevent scroll ON the AppBar while refreshing
-        scrollBehavior = if (state.isRefreshing) null else scrollBehavior,
-        sortOrder = state.sortOrder,
-        onGridSizeItemMenuClicked = onGridSizeItemMenuClicked,
-        onSortMenuItemClicked = onSortMenuItemClicked,
-        onClearFavoritesMenuItemClicked = onFavoritesClearClicked,
-      )
+      if (!isLandscape) {
+        ChampionListToolbar(
+          modifier = Modifier.fillMaxWidth(),
+          // needed to prevent scroll ON the AppBar while refreshing
+          scrollBehavior = if (state.isRefreshing) null else scrollBehavior,
+          sortOrder = state.sortOrder,
+          onGridSizeItemMenuClicked = onGridSizeItemMenuClicked,
+          onSortMenuItemClicked = onSortMenuItemClicked,
+          onClearFavoritesMenuItemClicked = onFavoritesClearClicked,
+        )
+      }
     },
   ) { contentPadding ->
     val topPadding = contentPadding.calculateTopPadding()
@@ -72,13 +77,14 @@ fun ChampionListScreen(
       isRefreshing = state.isRefreshing,
       onRefresh = onRefresh,
       indicatorContentPadding = contentPadding,
+      enabled = !isLandscape,
     ) {
       if (!state.showError) {
         LazyVerticalGrid(
           modifier = Modifier.fillMaxSize(),
           // prevent scrolling ON the list while refreshing
           userScrollEnabled = !state.isRefreshing,
-          columns = GridCells.Fixed(state.gridSize.count),
+          columns = gridCells,
           contentPadding =
             PaddingValues(start = 4.dp, end = 4.dp, top = 4.dp + topPadding, bottom = 4.dp),
           horizontalArrangement = Arrangement.spacedBy(16.dp),

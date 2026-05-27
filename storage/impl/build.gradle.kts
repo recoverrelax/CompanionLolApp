@@ -17,6 +17,8 @@ dependencies {
   ksp(libs.dagger.hilt.compiler)
 
   testImplementation(libs.junit)
+  testImplementation(libs.kotlinx.coroutines.test)
+  testImplementation(libs.io.sqldelight.sqlite)
   androidTestImplementation(libs.androidx.espresso.core)
   androidTestImplementation(libs.androidx.junit)
 }

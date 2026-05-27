@@ -31,6 +31,8 @@ import com.companion.lol.app.R
 import com.companion.lol.app.compose.app.CompanionAppSurface
 import com.companion.lol.app.compose.ui.tooling.CompanionAppPreview
 import com.companion.lol.app.compose.ui.tooling.CompanionAppPreviewWrapperProvider
+import com.companion.lol.app.compose.ui.tooling.LandscapePreview
+import com.companion.lol.app.compose.utils.isLandscape
 import com.companion.lol.app.compose.utils.rememberSaveableTextFieldState
 import com.companion.lol.app.ui.LocalContentPadding
 
@@ -48,10 +50,13 @@ fun LoginScreen() {
 
 @Composable
 fun LoginScreen(state: LoginState, onEmailChanged: (String) -> Unit, onLoginClicked: () -> Unit) {
+  val isLandscape = isLandscape()
+  val widthModifier = Modifier.fillMaxWidth(if (isLandscape) 0.5f else 1f)
+
   CompanionAppSurface(modifier = Modifier.fillMaxSize()) {
     Column(modifier = Modifier.padding(LocalContentPadding.current)) {
       Column(
-        modifier = Modifier.fillMaxWidth().weight(1f),
+        modifier = widthModifier.weight(1f),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
       ) {
@@ -96,7 +101,7 @@ fun LoginScreen(state: LoginState, onEmailChanged: (String) -> Unit, onLoginClic
       Button(
         onClick = onLoginClicked,
         enabled = state.isEmailValid,
-        modifier = Modifier.imePadding().padding(32.dp).fillMaxWidth(),
+        modifier = widthModifier.imePadding().padding(32.dp).fillMaxWidth(),
       ) {
         Text(text = stringResource(R.string.login_continue))
       }
@@ -106,6 +111,7 @@ fun LoginScreen(state: LoginState, onEmailChanged: (String) -> Unit, onLoginClic
 
 @Composable
 @CompanionAppPreview
+@LandscapePreview
 @PreviewWrapper(CompanionAppPreviewWrapperProvider::class)
 private fun LoginPreview() {
   LoginScreen(state = LoginState(email = ""), onEmailChanged = {}, onLoginClicked = {})

@@ -23,9 +23,5 @@ dependencies {
   api(libs.io.sqldelight.coroutines)
   api(libs.kotlinx.datetime)
 
-  testImplementation(libs.junit)
-  testImplementation(libs.kotlinx.coroutines.test)
-  testImplementation(libs.io.sqldelight.sqlite)
-
   compileOnly(libs.androidx.compose.runtime.annotation)
 }

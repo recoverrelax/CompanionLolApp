@@ -36,6 +36,7 @@ fun ChampionListPullRefreshBox(
   state: PullToRefreshState = rememberPullToRefreshState(),
   contentAlignment: Alignment = Alignment.TopStart,
   indicatorContentPadding: PaddingValues = PaddingValues.Zero,
+  enabled: Boolean = true,
   content: @Composable BoxScope.() -> Unit,
 ) {
   val indicatorHeight = 150.dp
@@ -44,25 +45,34 @@ fun ChampionListPullRefreshBox(
   val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.loading))
   val animatable = rememberLottieAnimatable()
 
-  LaunchedEffect(composition, isRefreshing) {
-    if (isRefreshing) {
-      animatable.animate(composition = composition, iterations = LottieConstants.IterateForever)
-    } else {
-      animatable.snapTo(composition = composition, progress = 0f)
+  if (enabled) {
+    LaunchedEffect(composition, isRefreshing) {
+      if (isRefreshing) {
+        animatable.animate(composition = composition, iterations = LottieConstants.IterateForever)
+      } else {
+        animatable.snapTo(composition = composition, progress = 0f)
+      }
     }
   }
 
   Box(
     modifier =
-      modifier.pullToRefresh(state = state, isRefreshing = isRefreshing, onRefresh = onRefresh),
+      modifier.pullToRefresh(
+        state = state,
+        isRefreshing = isRefreshing,
+        onRefresh = onRefresh,
+        enabled = enabled,
+      ),
     contentAlignment = contentAlignment,
   ) {
     Box(
       modifier =
-        Modifier.fillMaxWidth().graphicsLayer {
-          translationY = state.distanceFraction * maxDistance.toPx()
-          clip = true
-        }
+        if (enabled) {
+          Modifier.fillMaxWidth().graphicsLayer {
+            translationY = state.distanceFraction * maxDistance.toPx()
+            clip = true
+          }
+        } else Modifier
     ) {
       content()
     }
