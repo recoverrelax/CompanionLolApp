@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -97,17 +96,8 @@ fun SettingsScreen(
       Button(
         modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
         onClick = onLogoutClicked,
-        shape = RoundedCornerShape(12.dp),
-        colors =
-          ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-          ),
       ) {
-        Text(
-          text = stringResource(R.string.settings_logout).uppercase(),
-          fontWeight = FontWeight.Bold,
-        )
+        Text(text = stringResource(R.string.settings_logout).uppercase())
       }
     }
   }

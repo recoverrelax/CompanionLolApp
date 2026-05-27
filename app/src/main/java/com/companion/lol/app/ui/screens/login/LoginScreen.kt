@@ -19,14 +19,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.companion.lol.app.R
 import com.companion.lol.app.compose.app.CompanionAppSurface
 import com.companion.lol.app.compose.ui.tooling.CompanionAppPreview
 import com.companion.lol.app.compose.ui.tooling.CompanionAppPreviewWrapperProvider
@@ -95,10 +96,9 @@ fun LoginScreen(state: LoginState, onEmailChanged: (String) -> Unit, onLoginClic
       Button(
         onClick = onLoginClicked,
         enabled = state.isEmailValid,
-        modifier = Modifier.imePadding().padding(32.dp).fillMaxWidth().height(64.dp),
-        shape = RoundedCornerShape(16.dp),
+        modifier = Modifier.imePadding().padding(32.dp).fillMaxWidth(),
       ) {
-        Text(text = "Continue", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        Text(text = stringResource(R.string.login_continue))
       }
     }
   }

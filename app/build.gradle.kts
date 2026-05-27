@@ -12,7 +12,7 @@ plugins {
 android {
     namespace = "com.companion.lol.app"
     compileSdk {
-        version = release(36)
+        version = release(37)
     }
 
     defaultConfig {

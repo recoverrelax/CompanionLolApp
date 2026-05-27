@@ -21,4 +21,5 @@
     <string name="settings_email">Email</string>
     <string name="settings_auto_sync">Auto-sync</string>
     <string name="settings_logout">Logout</string>
+    <string name="login_continue">Continue</string>
 </resources>

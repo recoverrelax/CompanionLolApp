@@ -24,7 +24,6 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
-import androidx.navigation3.runtime.NavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
@@ -118,13 +117,6 @@ private fun NavDisplay(
 ) {
 
   SharedTransitionLayout {
-    val navigationBarDecoratorStrategy =
-      rememberNavigationBarDecoratorStrategy<ScreenKey>(
-        navBar = { NavigationBar(currentKey = { backStack.current }, goTo = backStack::goTo) },
-        sharedTransitionScope = this,
-      )
-    val bottomSheetStrategy = rememberBottomSheetSceneStrategy<ScreenKey>()
-
     CompositionLocalProvider(
       LocalContentPadding provides contentPadding,
       LocalChampionColorCache provides colorCache,
@@ -135,12 +127,20 @@ private fun NavDisplay(
         backStack = backStack.history,
         onBack = backStack::goBack,
         entryDecorators =
-          rememberDecorators(
+          listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator(),
           ),
-        sceneStrategies = listOf(bottomSheetStrategy),
-        sceneDecoratorStrategies = listOf(navigationBarDecoratorStrategy),
+        sceneStrategies = listOf(rememberBottomSheetSceneStrategy()),
+        sceneDecoratorStrategies =
+          listOf(
+            rememberNavigationBarDecoratorStrategy(
+              navBar = {
+                NavigationBar(currentKey = { backStack.current }, goTo = backStack::goTo)
+              },
+              sharedTransitionScope = this,
+            )
+          ),
         transitionSpec = defaultNoTransition(),
         popTransitionSpec = defaultNoTransition(),
         predictivePopTransitionSpec = predictiveBack(),
@@ -156,8 +156,3 @@ private fun NavDisplay(
     }
   }
 }
-
-@Composable
-private fun <T : ScreenKey> rememberDecorators(
-  vararg decorators: NavEntryDecorator<T>
-): List<NavEntryDecorator<T>> = listOf(*decorators)
