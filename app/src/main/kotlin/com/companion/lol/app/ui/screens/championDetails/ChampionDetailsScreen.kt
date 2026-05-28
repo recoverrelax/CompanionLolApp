@@ -13,16 +13,18 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -52,9 +54,8 @@ import com.companion.lol.app.R
 import com.companion.lol.app.compose.app.TitleHeader
 import com.companion.lol.app.compose.utils.isLandscape
 import com.companion.lol.app.io.UiError
-import com.companion.lol.app.ui.LocalContentPadding
-import com.companion.lol.app.ui.LocalSnackBarManager
-import com.companion.lol.app.ui.SnackBarManager
+import com.companion.lol.app.ui.LocalMessagePoster
+import com.companion.lol.app.ui.MessagePoster
 import com.companion.lol.app.util.ChampionColorCache
 import com.companion.lol.app.util.DominantColorCoilImage
 import com.companion.lol.app.util.EMPTY_STRING
@@ -73,13 +74,13 @@ fun ChampionDetailsScreen(championId: ChampionId, goBack: () -> Unit) {
       creationCallback = { factory -> factory.create(championId) }
     )
   val state by viewModel.state.collectAsStateWithLifecycle()
-  val snackBarManager = LocalSnackBarManager.current
+  val messagePoster = LocalMessagePoster.current
   val championSkinsProvider =
     rememberChampionSkinProvider(championId = championId, skins = state.details?.skins)
 
   ChampionDetailsScreen(
     state = state,
-    snackBarManager = snackBarManager,
+    messagePoster = messagePoster,
     skinsProvider = championSkinsProvider,
     uiErrors = viewModel.uiErrors,
     goBack = goBack,
@@ -90,7 +91,7 @@ fun ChampionDetailsScreen(championId: ChampionId, goBack: () -> Unit) {
 @Composable
 fun ChampionDetailsScreen(
   state: ChampionDetailsState,
-  snackBarManager: SnackBarManager,
+  messagePoster: MessagePoster,
   skinsProvider: ChampionSkinProvider,
   uiErrors: UiMessageEventFlow<UiError>,
   goBack: () -> Unit,
@@ -101,7 +102,7 @@ fun ChampionDetailsScreen(
 
   LaunchedEffect(uiErrors) {
     uiErrors.collect {
-      snackBarManager.addError(it)
+      messagePoster.addError(it)
       goBack()
     }
   }
@@ -125,14 +126,7 @@ fun ChampionDetailsScreen(
   val content =
     @Composable {
       Column(modifier = Modifier) {
-        if (state.champion == null || state.details == null) {
-          LinearProgressIndicator(
-            modifier = Modifier.fillMaxWidth(),
-            color = championColorCache.getColor(championId),
-            trackColor = MaterialTheme.colorScheme.onSurface,
-            gapSize = 0.dp,
-          )
-        } else {
+        if (state.champion != null && state.details != null) {
           Row {
             ChampionPartyType(
               modifier = Modifier.padding(start = 16.dp, top = 16.dp).weight(1f),
@@ -171,20 +165,28 @@ fun ChampionDetailsScreen(
       modifier =
         Modifier.fillMaxWidth()
           .background(MaterialTheme.colorScheme.surface)
-          .padding(
-            bottom =
-              LocalContentPadding.current
-                .calculateBottomPadding()
-                .plus(if (state.details == null) 0.dp else 32.dp)
-          )
+          .navigationBarsPadding()
     ) {
       Box(modifier = Modifier.fillMaxWidth().aspectRatio(1215f / 717f)) { header() }
       content()
     }
   } else {
-    Row(modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surface)) {
-      Box(modifier = Modifier.weight(1f).fillMaxSize()) { header() }
-      Box(modifier = Modifier.weight(1f).fillMaxSize()) { content() }
+    Box(modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surface)) {
+      Box(modifier = Modifier.fillMaxSize()) { header() }
+      Box(
+        modifier =
+          Modifier.systemBarsPadding()
+            .padding(end = 64.dp)
+            .fillMaxWidth(0.7f)
+            .fillMaxHeight()
+            .align(Alignment.TopEnd)
+            .background(
+              color = MaterialTheme.colorScheme.surface.copy(0.75f),
+              MaterialTheme.shapes.medium,
+            )
+      ) {
+        content()
+      }
     }
   }
 }
@@ -259,6 +261,17 @@ private fun ImageHeader(
         verticalAlignment = Alignment.CenterVertically,
       ) {
         Text(text = championName, style = MaterialTheme.typography.displaySmall)
+
+        if (!loaded) {
+          Spacer(modifier = Modifier.width(16.dp))
+          CircularProgressIndicator(
+            modifier = Modifier.size(20.dp),
+            color = championColorCache.getColor(championId),
+            trackColor = MaterialTheme.colorScheme.onSurface,
+            gapSize = 0.dp,
+            strokeWidth = 2.dp,
+          )
+        }
       }
       Text(
         text = championTitle,

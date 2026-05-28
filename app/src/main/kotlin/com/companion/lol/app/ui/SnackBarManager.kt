@@ -10,10 +10,8 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 
 @Stable
-interface SnackBarManager {
+interface SnackBarManager : MessagePoster {
   @Stable val snackBarHostState: SnackbarHostState
-
-  suspend fun addError(error: UiError)
 
   @Composable fun ShowSnackBarMessagesEffect(error: suspend SnackbarHostState.(UiError) -> Unit)
 
@@ -34,4 +32,9 @@ interface SnackBarManager {
       pendingErrors.send(error)
     }
   }
+}
+
+@Stable
+interface MessagePoster {
+  suspend fun addError(error: UiError)
 }

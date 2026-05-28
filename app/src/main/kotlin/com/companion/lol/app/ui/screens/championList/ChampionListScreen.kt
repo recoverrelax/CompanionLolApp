@@ -4,8 +4,10 @@ package com.companion.lol.app.ui.screens.championList
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -69,14 +71,13 @@ fun ChampionListScreen(
         )
       }
     },
+    contentWindowInsets = WindowInsets(),
   ) { contentPadding ->
-    val topPadding = contentPadding.calculateTopPadding()
-
     ChampionListPullRefreshBox(
       modifier = Modifier.fillMaxWidth(),
       isRefreshing = state.isRefreshing,
       onRefresh = onRefresh,
-      indicatorContentPadding = contentPadding,
+      contentPadding = contentPadding,
       enabled = !isLandscape,
     ) {
       if (!state.showError) {
@@ -85,10 +86,10 @@ fun ChampionListScreen(
           // prevent scrolling ON the list while refreshing
           userScrollEnabled = !state.isRefreshing,
           columns = gridCells,
-          contentPadding =
-            PaddingValues(start = 4.dp, end = 4.dp, top = 4.dp + topPadding, bottom = 4.dp),
-          horizontalArrangement = Arrangement.spacedBy(16.dp),
-          verticalArrangement = Arrangement.spacedBy(16.dp),
+          // AppBarPadding
+          contentPadding = contentPadding + PaddingValues(4.dp),
+          horizontalArrangement = Arrangement.spacedBy(8.dp),
+          verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
           items(items = state.champions, key = { it.id.value }) { item ->
             ChampionCard(

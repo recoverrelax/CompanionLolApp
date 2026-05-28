@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -36,7 +37,6 @@ import com.companion.lol.app.R
 import com.companion.lol.app.compose.ui.tooling.CompanionAppPreviewWrapperProvider
 import com.companion.lol.app.compose.ui.tooling.LandscapePreview
 import com.companion.lol.app.compose.utils.isLandscape
-import com.companion.lol.app.ui.LocalContentPadding
 
 private val rowShape = RoundedCornerShape(12.dp)
 
@@ -58,17 +58,12 @@ fun SettingsScreen(
   onAutoSyncChanged: (Boolean) -> Unit,
   onLogoutClicked: () -> Unit,
 ) {
-  val contentPadding = LocalContentPadding.current
   val isLandscape = isLandscape()
 
   val widthModifier = Modifier.fillMaxWidth(if (isLandscape) 0.5f else 1f)
 
   Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-    Box(
-      modifier =
-        Modifier.padding(top = contentPadding.calculateTopPadding())
-          .padding(horizontal = 16.dp, vertical = 24.dp)
-    ) {
+    Box(modifier = Modifier.statusBarsPadding().padding(16.dp)) {
       Column(modifier = widthModifier) {
         Text(
           text = stringResource(R.string.settings_title),

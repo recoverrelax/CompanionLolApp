@@ -6,8 +6,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -19,9 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -29,8 +29,6 @@ import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDe
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.companion.lol.app.compose.animation.defaultNoTransition
-import com.companion.lol.app.compose.animation.predictiveBack
 import com.companion.lol.app.compose.ui.theme.CompanionAppTheme
 import com.companion.lol.app.compose.utils.isLandscape
 import com.companion.lol.app.navigation.BackStack
@@ -42,16 +40,12 @@ import com.companion.lol.app.navigation.keys.ScreenKey
 import com.companion.lol.app.navigation.keys.SettingsKey
 import com.companion.lol.app.navigation.keys.entryScreenKey
 import com.companion.lol.app.ui.scene.rememberBottomSheetSceneStrategy
-import com.companion.lol.app.ui.scene.rememberNavigationBarDecoratorStrategy
-import com.companion.lol.app.ui.screens.NavigationBar
-import com.companion.lol.app.ui.screens.navigationBarHeight
 import com.companion.lol.app.util.ChampionColorCache
 import com.companion.lol.app.util.LocalChampionColorCache
 import dagger.hilt.android.AndroidEntryPoint
 
-val LocalContentPadding = compositionLocalOf { PaddingValues.Zero } // could be static?
 val LocalBackStack = compositionLocalOf<BackStack<ScreenKey>> { error("Not initialized") }
-val LocalSnackBarManager = compositionLocalOf<SnackBarManager> { error("Not initialized") }
+val LocalMessagePoster = compositionLocalOf<MessagePoster> { error("Not initialized") }
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -88,25 +82,23 @@ private fun MainScreen(
   }
 
   val isLandscape = isLandscape()
-  val snackbarPadding =
-    remember(backStack, isLandscape) {
-      derivedStateOf {
-        if (backStack.current.isNavBarEntry() && !isLandscape) {
-          navigationBarHeight
-        } else {
-          0.dp
-        }
-      }
+  val navBarVisible by
+    remember(backStack, isLandscape()) {
+      derivedStateOf { !isLandscape && backStack.current.isNavBarEntry() }
     }
 
   Scaffold(
     containerColor = MaterialTheme.colorScheme.secondary,
+    bottomBar = {
+      if (navBarVisible) {
+        NavigationBar(currentKey = { backStack.current }, goTo = backStack::goTo)
+      }
+    },
     snackbarHost = {
       SnackbarHost(
         hostState = snackBarManager.snackBarHostState,
         snackbar = {
           Snackbar(
-            modifier = Modifier.padding(bottom = snackbarPadding.value),
             snackbarData = it,
             containerColor = MaterialTheme.colorScheme.secondary,
             contentColor = MaterialTheme.colorScheme.onBackground,
@@ -114,12 +106,13 @@ private fun MainScreen(
         },
       )
     },
+    contentWindowInsets = WindowInsets(),
   ) { contentPadding ->
     NavDisplay(
       contentPadding = contentPadding,
       colorCache = colorCache,
       backStack = backStack,
-      snackBarManager = snackBarManager,
+      messagePoster = snackBarManager,
     )
   }
 }
@@ -129,46 +122,31 @@ private fun NavDisplay(
   contentPadding: PaddingValues,
   colorCache: ChampionColorCache,
   backStack: BackStack<ScreenKey>,
-  snackBarManager: SnackBarManager,
+  messagePoster: MessagePoster,
 ) {
-
-  SharedTransitionLayout {
-    CompositionLocalProvider(
-      LocalContentPadding provides contentPadding,
-      LocalChampionColorCache provides colorCache,
-      LocalBackStack provides backStack,
-      LocalSnackBarManager provides snackBarManager,
-    ) {
-      NavDisplay(
-        backStack = backStack.history,
-        onBack = backStack::goBack,
-        entryDecorators =
-          listOf(
-            rememberSaveableStateHolderNavEntryDecorator(),
-            rememberViewModelStoreNavEntryDecorator(),
-          ),
-        sceneStrategies = listOf(rememberBottomSheetSceneStrategy()),
-        sceneDecoratorStrategies =
-          listOf(
-            rememberNavigationBarDecoratorStrategy(
-              navBar = {
-                NavigationBar(currentKey = { backStack.current }, goTo = backStack::goTo)
-              },
-              sharedTransitionScope = this,
-            )
-          ),
-        transitionSpec = defaultNoTransition(),
-        popTransitionSpec = defaultNoTransition(),
-        predictivePopTransitionSpec = predictiveBack(),
-        entryProvider =
-          entryProvider {
-            entryScreenKey<InitialScreenKey>()
-            entryScreenKey<LoginKey>()
-            entryScreenKey<ChampionListKey>()
-            entryScreenKey<ChampionDetailsKey>()
-            entryScreenKey<SettingsKey>()
-          },
-      )
-    }
+  CompositionLocalProvider(
+    LocalChampionColorCache provides colorCache,
+    LocalBackStack provides backStack,
+    LocalMessagePoster provides messagePoster,
+  ) {
+    NavDisplay(
+      modifier = Modifier.padding(contentPadding),
+      backStack = backStack.history,
+      onBack = backStack::goBack,
+      entryDecorators =
+        listOf(
+          rememberSaveableStateHolderNavEntryDecorator(),
+          rememberViewModelStoreNavEntryDecorator(),
+        ),
+      sceneStrategies = listOf(rememberBottomSheetSceneStrategy()),
+      entryProvider =
+        entryProvider {
+          entryScreenKey<InitialScreenKey>()
+          entryScreenKey<LoginKey>()
+          entryScreenKey<ChampionListKey>()
+          entryScreenKey<ChampionDetailsKey>()
+          entryScreenKey<SettingsKey>()
+        },
+    )
   }
 }

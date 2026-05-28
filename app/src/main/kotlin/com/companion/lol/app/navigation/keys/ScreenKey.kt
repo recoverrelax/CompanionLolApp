@@ -24,7 +24,7 @@ sealed interface ScreenKey {
   }
 
   fun isNavBarEntry(): Boolean {
-    return metadata[ScreenMetadata.TopLevelDestination] ?: false
+    return (metadata[ScreenMetadata.TopLevelDestination] ?: false)
   }
 
   @Composable fun Content(backStack: BackStack<ScreenKey>)

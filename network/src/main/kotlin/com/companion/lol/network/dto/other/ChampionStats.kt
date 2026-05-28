@@ -12,7 +12,7 @@ class ChampionStats(
   val hp: Int,
   val hpperlevel: Int,
   val mp: Int,
-  val mpperlevel: Int,
+  val mpperlevel: Double,
   val movespeed: Int,
   val armor: Int,
   val armorperlevel: Float,

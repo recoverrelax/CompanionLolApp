@@ -35,7 +35,7 @@ fun ChampionListPullRefreshBox(
   modifier: Modifier = Modifier,
   state: PullToRefreshState = rememberPullToRefreshState(),
   contentAlignment: Alignment = Alignment.TopStart,
-  indicatorContentPadding: PaddingValues = PaddingValues.Zero,
+  contentPadding: PaddingValues = PaddingValues.Zero,
   enabled: Boolean = true,
   content: @Composable BoxScope.() -> Unit,
 ) {
@@ -67,18 +67,22 @@ fun ChampionListPullRefreshBox(
   ) {
     Box(
       modifier =
-        if (enabled) {
-          Modifier.fillMaxWidth().graphicsLayer {
-            translationY = state.distanceFraction * maxDistance.toPx()
-            clip = true
-          }
-        } else Modifier
+        Modifier.then(
+          if (enabled) {
+            Modifier.fillMaxWidth().graphicsLayer {
+              translationY = state.distanceFraction * maxDistance.toPx()
+              clip = true
+            }
+          } else Modifier
+        )
     ) {
       content()
     }
     IndicatorBox(
       modifier =
-        Modifier.padding(indicatorContentPadding)
+        Modifier
+          // AppBar Padding
+          .padding(contentPadding)
           .fillMaxWidth()
           .height(indicatorHeight)
           .align(Alignment.TopCenter),

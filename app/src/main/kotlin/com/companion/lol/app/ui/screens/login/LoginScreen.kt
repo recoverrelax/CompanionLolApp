@@ -33,8 +33,6 @@ import com.companion.lol.app.compose.ui.tooling.CompanionAppPreview
 import com.companion.lol.app.compose.ui.tooling.CompanionAppPreviewWrapperProvider
 import com.companion.lol.app.compose.ui.tooling.LandscapePreview
 import com.companion.lol.app.compose.utils.isLandscape
-import com.companion.lol.app.compose.utils.rememberSaveableTextFieldState
-import com.companion.lol.app.ui.LocalContentPadding
 
 @Composable
 fun LoginScreen() {
@@ -54,7 +52,7 @@ fun LoginScreen(state: LoginState, onEmailChanged: (String) -> Unit, onLoginClic
   val widthModifier = Modifier.fillMaxWidth(if (isLandscape) 0.5f else 1f)
 
   CompanionAppSurface(modifier = Modifier.fillMaxSize()) {
-    Column(modifier = Modifier.padding(LocalContentPadding.current)) {
+    Column {
       Column(
         modifier = widthModifier.weight(1f),
         verticalArrangement = Arrangement.Center,
@@ -76,8 +74,6 @@ fun LoginScreen(state: LoginState, onEmailChanged: (String) -> Unit, onLoginClic
         )
 
         Spacer(modifier = Modifier.height(48.dp))
-
-        rememberSaveableTextFieldState(state.email)
 
         OutlinedTextField(
           value = state.email,

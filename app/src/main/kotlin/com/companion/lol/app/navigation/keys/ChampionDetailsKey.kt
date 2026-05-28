@@ -17,7 +17,9 @@ data class ChampionDetailsKey(
   @Serializable(ChampionIdSerializer::class) val championId: ChampionId
 ) : ScreenKey {
 
-  @Transient override val metadata: Map<String, Any> = ScreenMetadata.bottomSheet()
+  @Transient
+  override val metadata: Map<String, Any> =
+    ScreenMetadata.bottomSheet() + ScreenMetadata.topLevelDestination()
 
   override fun requiresAuth(): Boolean = true
 
