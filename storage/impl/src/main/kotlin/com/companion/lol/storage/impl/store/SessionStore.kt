@@ -18,7 +18,7 @@ class SessionStore @Inject constructor(database: LolAppDb, private val dbDispatc
   SqldelightStore<SessionQueries>(database.sessionQueries) {
 
   suspend fun insert(value: SessionTable) =
-    withContext(dbDispatcher) { queries.insert(value.copy(id = SessionId)) }
+    withContext(dbDispatcher) { queries.insert(value.copy(id = SessionId)).await() }
 
   fun observe(): Flow<SessionTable?> = queries.get().asFlow().mapToOneOrNull(dbDispatcher)
 

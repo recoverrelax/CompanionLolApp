@@ -23,7 +23,8 @@ import kotlinx.coroutines.flow.map
 /**
  * This idea is kinda stupid. Its really not that easy to position the snackbar in the parent
  * composable and be aware of the NavEntry content so that it does not overlap anything. This idea
- * works but its kinda hack :p
+ * works but its kinda hack :p Otherwise we would need a host on every NavEntry, and if we want to
+ * display an error and change screen it will not be present full time
  *
  * TODO() find better way
  */
@@ -58,9 +59,7 @@ enum class SnackBarPosition {
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 inline fun <reified S : ScreenKey> Modifier.reportSnackBarPosition(
   position: SnackBarPosition = SnackBarPosition.TOP
-): Modifier {
-  return reportSnackBarPosition(position = position, screenId = ScreenKey.id<S>())
-}
+): Modifier = reportSnackBarPosition(position = position, screenId = ScreenKey.id<S>())
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 fun Modifier.reportSnackBarPosition(position: SnackBarPosition, screenId: String): Modifier =

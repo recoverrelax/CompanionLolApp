@@ -26,7 +26,7 @@ class BackStackSaver<S : ScreenKey>(
     )
 
   fun attackBackStack(backStack: BackStack<S>, restore: Boolean) {
-    (backStack as BackStack.Impl<S>).save = { saverDelegate = it }
+    (backStack as BackStack.Impl<S>).saver = { saverDelegate = it }
     if (restore) saverDelegate?.let(backStack::setHistory)
   }
 }

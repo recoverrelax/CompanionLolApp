@@ -26,8 +26,6 @@ import kotlinx.coroutines.flow.update
 
 @Stable
 interface SnackBarManager : MessagePoster {
-  @Stable val snackBarHostState: SnackbarHostState
-
   @Composable
   fun SnackBarHost(
     positionReporter: SnackBarPositionReporter,
@@ -40,10 +38,8 @@ interface SnackBarManager : MessagePoster {
     },
   )
 
-  fun clearMessage(id: Long)
-
   class Impl : SnackBarManager {
-    override val snackBarHostState: SnackbarHostState = SnackbarHostState()
+    @Stable private val snackBarHostState: SnackbarHostState = SnackbarHostState()
     private val _message = MutableStateFlow(emptyList<UiError>())
     val message: Flow<UiError> =
       _message.map { it.firstOrNull() }.distinctUntilChanged().filterNotNull()
@@ -52,7 +48,7 @@ interface SnackBarManager : MessagePoster {
       _message.update { it + message }
     }
 
-    override fun clearMessage(id: Long) {
+    private fun clearMessage(id: Long) {
       _message.update { messages -> messages.filterNot { it.id == id } }
     }
 

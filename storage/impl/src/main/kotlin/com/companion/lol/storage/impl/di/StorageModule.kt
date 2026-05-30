@@ -1,6 +1,7 @@
 package com.companion.lol.storage.impl.di
 
 import android.content.Context
+import androidx.sqlite.db.SupportSQLiteDatabase
 import app.cash.sqldelight.EnumColumnAdapter
 import app.cash.sqldelight.Transacter
 import app.cash.sqldelight.adapter.primitive.IntColumnAdapter
@@ -42,7 +43,22 @@ internal object StorageModule {
   @Provides
   @Singleton
   fun driver(@ApplicationContext context: Context): SqlDriver =
-    AndroidSqliteDriver(LolAppDb.Schema, context, "com.lol.storage.db")
+    AndroidSqliteDriver(
+      schema = LolAppDb.Schema,
+      context = context,
+      name = "com.lol.storage.db",
+      callback =
+        object : AndroidSqliteDriver.Callback(LolAppDb.Schema) {
+          override fun onOpen(db: SupportSQLiteDatabase) {
+            super.onOpen(db)
+
+            db.query("PRAGMA journal_mode=WAL;").close()
+            db.query("PRAGMA synchronous=NORMAL;").close()
+            db.execSQL("PRAGMA temp_store=MEMORY;")
+            db.execSQL("PRAGMA cache_size=-6000;")
+          }
+        },
+    )
 
   @Provides
   @Singleton

@@ -23,6 +23,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.companion.lol.app.compose.utils.isLandscape
 import com.companion.lol.app.navigation.keys.ChampionListKey
+import com.companion.lol.app.util.ChampionColorCache
+import com.companion.lol.app.util.LocalChampionColorCache
 import com.companion.lol.app.util.count
 import com.companion.lol.app.util.modifier.SnackBarPosition
 import com.companion.lol.app.util.modifier.reportSnackBarPosition
@@ -58,6 +60,7 @@ fun ChampionListScreen(
   val isLandscape = isLandscape()
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
   val gridCells = GridCells.Fixed(if (isLandscape) 8 else state.gridSize.count)
+  val championColorCache: ChampionColorCache = LocalChampionColorCache.current
 
   Scaffold(
     modifier =
@@ -99,6 +102,7 @@ fun ChampionListScreen(
           items(items = state.champions, key = { it.id.value }) { item ->
             ChampionCard(
               modifier = Modifier.fillMaxWidth().animateItem(),
+              championColorCache = championColorCache,
               champion = item,
               onCardClick = onCardClick,
               gridSize = state.gridSize,

@@ -35,7 +35,7 @@ internal object NetworkModule {
     @Suppress("JSON_FORMAT_REDUNDANT")
     return runBlocking(Dispatchers.IO) {
       Retrofit.Builder()
-        .baseUrl(EndPoints.DDragon.BASE) // we replace this later
+        .baseUrl(EndPoints.DDragon.BASE)
         .addConverterFactory(
           Json { ignoreUnknownKeys = true }.asConverterFactory("application/json".toMediaType())
         )

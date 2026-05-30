@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -79,6 +80,7 @@ private fun MainScreen(
     Scaffold(
       containerColor = MaterialTheme.colorScheme.secondary,
       snackbarHost = { snackBarManager.SnackBarHost(posReporter) },
+      contentWindowInsets = WindowInsets(),
     ) {
       NavDisplay(backStack = backStack)
     }
@@ -87,6 +89,9 @@ private fun MainScreen(
 
 @Composable
 private fun NavDisplay(backStack: BackStack<ScreenKey>) {
+  val navigationBar =
+    @Composable { NavigationBar(currentKey = { backStack.current }, goTo = backStack::goTo) }
+
   SharedTransitionLayout {
     NavDisplay(
       backStack = backStack.history,
@@ -100,7 +105,7 @@ private fun NavDisplay(backStack: BackStack<ScreenKey>) {
       sceneDecoratorStrategies =
         listOf(
           rememberNavigationBarDecoratorStrategy(
-            navBar = { NavigationBar(currentKey = { backStack.current }, goTo = backStack::goTo) },
+            navBar = navigationBar,
             sharedTransitionScope = this,
           )
         ),

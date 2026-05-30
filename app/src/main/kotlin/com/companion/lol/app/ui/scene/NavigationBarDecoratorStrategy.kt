@@ -83,7 +83,7 @@ class NavigationBarDecoratorStrategy<T : Any>(
 
     val key: ScreenKey = lastEntry.metadata[ScreenMetadata.ScreenId] ?: return scene
 
-    return if (key.isNavBarEntry()) {
+    return if (key.metadata[ScreenMetadata.TopLevelDestination] ?: false) {
       NavigationBarDecoratorScene(scene, sharedTransitionScope, navBarContent)
     } else {
       scene

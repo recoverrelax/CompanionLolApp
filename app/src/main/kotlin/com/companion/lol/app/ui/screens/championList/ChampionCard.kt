@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.companion.lol.app.util.ChampionColorCache
 import com.companion.lol.app.util.DominantColorCoilImage
-import com.companion.lol.app.util.LocalChampionColorCache
 import com.companion.lol.data.io.images.DdragonImage
 import com.companion.lol.data.model.ChampionModel
 import com.companion.lol.storage.impl.model.ids.ChampionId
@@ -45,12 +44,11 @@ import com.companion.lol.storage.impl.model.other.GridSize
 @Composable
 fun ChampionCard(
   modifier: Modifier,
+  championColorCache: ChampionColorCache,
   champion: ChampionModel,
   gridSize: GridSize,
   onCardClick: (ChampionId) -> Unit,
 ) {
-  val championColorCache: ChampionColorCache = LocalChampionColorCache.current
-
   val small =
     MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp, fontWeight = FontWeight.Light)
   val medium =
@@ -149,7 +147,7 @@ fun ChampionCard(
                     Modifier.border(BorderStroke(2.dp, favoriteBorderBrush), RectangleShape)
                   else Modifier
                 ),
-            shouldUpdateColor = false,
+            shouldExtractColor = true,
           )
         }
       },

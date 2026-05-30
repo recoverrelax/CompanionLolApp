@@ -32,7 +32,7 @@ fun DominantColorCoilImage(
   image: DdragonImage?,
   championColorCache: ChampionColorCache,
   imageModifier: Modifier = Modifier,
-  shouldUpdateColor: Boolean,
+  shouldExtractColor: Boolean,
 ) {
   val context = LocalContext.current
 
@@ -48,7 +48,7 @@ fun DominantColorCoilImage(
               DominantColorTransformation(
                 championId = championId,
                 championColorCache = championColorCache,
-                shouldUpdateColor = shouldUpdateColor,
+                shouldExtractColor = shouldExtractColor,
               )
             )
             .build()
@@ -73,15 +73,15 @@ fun DominantColorCoilImage(
   }
 }
 
-private class DominantColorTransformation(
+private data class DominantColorTransformation(
   private val championId: ChampionId,
   private val championColorCache: ChampionColorCache,
-  private val shouldUpdateColor: Boolean,
+  private val shouldExtractColor: Boolean,
 ) : Transformation() {
-  override val cacheKey: String = championId.value.toString()
+  override val cacheKey: String = "dominantColorTransformation-$$shouldExtractColor"
 
   override suspend fun transform(input: Bitmap, size: Size): Bitmap {
-    if (!shouldUpdateColor) {
+    if (shouldExtractColor) {
       championColorCache.extractColor(input, championId)
     }
     return input

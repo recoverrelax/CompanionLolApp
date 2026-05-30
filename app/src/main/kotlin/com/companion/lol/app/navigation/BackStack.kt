@@ -21,47 +21,49 @@ interface BackStack<S : ScreenKey> {
   fun goBack(): Boolean
 
   class Impl<S : ScreenKey>(private val initialValue: List<S>) : BackStack<S> {
-    var save: ((List<S>) -> Unit) = {}
-    private val _history: SnapshotStateList<S> =
-      SnapshotStateList<S>().apply { addAll(initialValue) }
-    override val history: List<S>
-      get() = _history
+    var saver: ((List<S>) -> Unit) = {}
+    override val history = SnapshotStateList<S>().apply { addAll(initialValue) }
 
     override val current: S
-      get() = _history.last()
+      get() = history.last()
 
-    override fun setHistory(singleKey: S) {
-      setHistory(listOf(singleKey))
-      save()
-    }
-
-    override fun setHistory(newHistory: List<S>) = withSnapshot {
-      _history.clear()
-      _history.addAll(newHistory)
-      save()
-    }
-
-    override fun goTo(key: S) = withSnapshot {
-      val last =
-        _history.lastOrNull() ?: error("Cannot use goTo without having a valid non-empty history")
-
-      // no repeated keys allowed
-      if (last == key) return@withSnapshot
-
-      val index = _history.indexOf(key)
-      if (index != -1) {
-        while (_history.size > index + 1) {
-          _history.removeAt(_history.size - 1)
+    override fun setHistory(singleKey: S) =
+      withSnapshot {
+          history.clear()
+          history.add(singleKey)
         }
-      } else {
-        _history.add(key)
-      }
-      save()
-    }
+        .also { save() }
+
+    override fun setHistory(newHistory: List<S>) =
+      withSnapshot {
+          history.clear()
+          history.addAll(newHistory)
+        }
+        .also { save() }
+
+    override fun goTo(key: S) =
+      withSnapshot {
+          val last =
+            history.lastOrNull()
+              ?: error("Cannot use goTo without having a valid non-empty history")
+
+          // no repeated keys allowed
+          if (last == key) return@withSnapshot
+
+          val index = history.indexOf(key)
+          if (index != -1) {
+            while (history.size > index + 1) {
+              history.removeAt(history.size - 1)
+            }
+          } else {
+            history.add(key)
+          }
+        }
+        .also { save() }
 
     override fun goBack(): Boolean {
-      if (_history.size > 1) {
-        _history.removeAt(_history.size - 1)
+      if (history.size > 1) {
+        history.removeAt(history.size - 1)
         save()
         return true
       }
@@ -69,7 +71,7 @@ interface BackStack<S : ScreenKey> {
     }
 
     private fun save() {
-      save(this.history.toList())
+      saver(this.history.toList())
     }
   }
 }

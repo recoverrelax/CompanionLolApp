@@ -7,7 +7,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.navigation3.runtime.EntryProviderScope
-import androidx.navigation3.runtime.get
 import com.companion.lol.app.navigation.ScreenMetadata
 import kotlin.reflect.KClass
 import kotlinx.serialization.Serializable
@@ -20,10 +19,6 @@ sealed interface ScreenKey {
 
   fun requiresAuth(): Boolean {
     return false
-  }
-
-  fun isNavBarEntry(): Boolean {
-    return (metadata[ScreenMetadata.TopLevelDestination] ?: false)
   }
 
   @Composable fun Content()

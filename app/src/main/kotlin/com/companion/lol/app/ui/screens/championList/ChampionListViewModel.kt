@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-private val showcaseArtificialAnimationDelay = if (BuildConfig.DEBUG) 2.seconds else Duration.ZERO
+private val showcaseArtificialAnimationDelay = if (BuildConfig.DEBUG) 1.5.seconds else Duration.ZERO
 
 @HiltViewModel
 class ChampionListViewModel
@@ -56,6 +56,7 @@ constructor(
         transform = { champion, settings, refreshState ->
           ChampionListState(
             // few champions, otherwise flowOn down the line
+            // or sort in db query
             champions = champion.sortBy(settings.championSortOrder),
             gridSize = settings.championGridSize,
             sortOrder = settings.championSortOrder,

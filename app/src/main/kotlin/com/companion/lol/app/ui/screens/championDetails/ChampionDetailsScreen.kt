@@ -70,10 +70,12 @@ fun ChampionDetailsScreen(championId: ChampionId) {
   val state by viewModel.state.collectAsStateWithLifecycle()
   val championSkinsProvider =
     rememberChampionSkinProvider(championId = championId, skins = state.details?.skins)
+  val championColorCache = LocalChampionColorCache.current
 
   ChampionDetailsScreen(
     state = state,
     skinsProvider = championSkinsProvider,
+    championColorCache = championColorCache,
     onFavoritesClicked = viewModel::onFavoritesClicked,
   )
 }
@@ -82,11 +84,10 @@ fun ChampionDetailsScreen(championId: ChampionId) {
 fun ChampionDetailsScreen(
   state: ChampionDetailsState,
   skinsProvider: ChampionSkinProvider,
+  championColorCache: ChampionColorCache,
   onFavoritesClicked: () -> Unit,
 ) {
   val championId = state.championId
-  val championColorCache = LocalChampionColorCache.current
-
   val isLandscape = isLandscape()
 
   val header =
@@ -190,7 +191,7 @@ private fun ImageHeader(
       championId = championId,
       image = skinsProvider.image,
       championColorCache = championColorCache,
-      shouldUpdateColor = true,
+      shouldExtractColor = false,
     )
 
     Icon(
