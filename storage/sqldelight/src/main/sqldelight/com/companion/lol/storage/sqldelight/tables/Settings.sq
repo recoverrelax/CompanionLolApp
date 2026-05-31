@@ -1,9 +1,9 @@
-import com.companion.lol.storage.impl.model.ids.SettingsId;
+import com.companion.lol.storage.impl.model.ids.SingleId;
 import com.companion.lol.storage.impl.model.other.GridSize;
 import com.companion.lol.storage.impl.model.other.SortOrder;
 
 CREATE TABLE SettingsTable (
-  id INTEGER AS SettingsId NOT NULL PRIMARY KEY,
+  id INTEGER AS SingleId NOT NULL PRIMARY KEY CHECK(id = 1),
   championGridSize TEXT AS GridSize NOT NULL,
   championSortOrder TEXT AS SortOrder NOT NULL
 );

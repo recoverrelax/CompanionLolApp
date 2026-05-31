@@ -10,8 +10,7 @@ import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import com.companion.lol.storage.impl.adapter.ChampionIdAdapter
 import com.companion.lol.storage.impl.adapter.ChampionTagAdapter
 import com.companion.lol.storage.impl.adapter.PartyTypeIdAdapter
-import com.companion.lol.storage.impl.adapter.SessionIdAdapter
-import com.companion.lol.storage.impl.adapter.SettingsIdAdapter
+import com.companion.lol.storage.impl.adapter.SingleIdAdapter
 import com.companion.lol.storage.impl.adapter.SkinIdAdapter
 import com.companion.lol.storage.impl.model.other.GridSize
 import com.companion.lol.storage.impl.model.other.PartyType
@@ -80,11 +79,11 @@ internal object StorageModule {
         ChampionPartyTypeTable.Adapter(PartyTypeIdAdapter, EnumColumnAdapter<PartyType>()),
       SettingsTableAdapter =
         SettingsTable.Adapter(
-          SettingsIdAdapter,
+          SingleIdAdapter,
           EnumColumnAdapter<GridSize>(),
           EnumColumnAdapter<SortOrder>(),
         ),
-      SessionTableAdapter = SessionTable.Adapter(SessionIdAdapter),
+      SessionTableAdapter = SessionTable.Adapter(SingleIdAdapter),
       SkinTableAdapter = SkinTable.Adapter(ChampionIdAdapter, SkinIdAdapter, IntColumnAdapter),
       ChampionDetailsTableAdapter =
         ChampionDetailsTable.Adapter(
